@@ -1,9 +1,10 @@
 -- SCRIPT UPDATE DATABASE (TANPA MENGHAPUS DATA LAMA)
 -- Jalankan script ini di phpMyAdmin server live (hosting/cpanel)
 
--- 1. Tambahkan kolom tipe di tabel dompet (jika sebelumnya belum ada)
--- Abaikan error jika kolom tipe sudah ada.
+-- 1. Tambahkan kolom yang baru jika belum ada
+-- Abaikan error jika kolom sudah ada.
 ALTER TABLE dompet ADD COLUMN tipe ENUM('Pribadi', 'Bisnis') NOT NULL DEFAULT 'Bisnis' AFTER nama_dompet;
+ALTER TABLE transaksi_penjualan ADD COLUMN status_pembayaran ENUM('Lunas', 'Hutang') DEFAULT 'Lunas' AFTER status;
 
 -- 2. Pastikan dompet pribadi diset sebagai 'Pribadi'
 UPDATE dompet SET tipe='Pribadi' WHERE nama_dompet LIKE '%Pribadi%';
