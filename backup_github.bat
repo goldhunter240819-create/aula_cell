@@ -1,6 +1,6 @@
 @echo off
 title Backup Aula Cell ke GitHub
-color 0B
+color 0A
 echo ========================================================
 echo         BACKUP SISTEM KEUANGAN AULA CELL KE GITHUB
 echo ========================================================
