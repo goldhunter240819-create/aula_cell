@@ -58,10 +58,10 @@ $foto_url = empty($foto) ? "../aulalogo.png" : "../uploads/" . $foto;
         }
     </style>
 </head>
-<body class="font-sans antialiased md:flex md:justify-center md:items-center h-[100dvh] overflow-hidden md:p-4">
+<body class="font-sans antialiased bg-slate-900 flex justify-center items-center h-[100dvh] overflow-hidden md:p-4">
 
     <!-- Mobile Frame -->
-    <div class="w-full md:max-w-[400px] md:h-[800px] h-screen bg-bglight relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800 md:ring-4 md:ring-slate-900">
+    <div class="w-full md:max-w-[400px] md:h-[800px] h-[100dvh] bg-slate-50 relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800">
         
         <!-- Scrollable Content -->
         <div class="flex-1 overflow-y-auto overflow-x-hidden pb-24">
