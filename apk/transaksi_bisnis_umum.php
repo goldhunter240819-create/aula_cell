@@ -70,7 +70,7 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
     </script>
     <style>
         body { background-color: #0f172a; color: #334155; -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 1.5rem); }
+        .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem); }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .header-curve { border-bottom-left-radius: 3rem; border-bottom-right-radius: 3rem; box-shadow: 0 10px 30px -10px rgba(147, 51, 234, 0.4); }
         .glass-input { background: rgba(255,255,255,0.9); border: 1px solid rgba(226, 232, 240, 0.8); backdrop-filter: blur(10px); }
@@ -99,7 +99,7 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
                 </div>
             </div>
             
-            <main class="px-5 pt-8 flex-1 flex flex-col relative z-10 -mt-6">
+            <main class="px-5 pt-8 flex-1 flex flex-col relative z-10 -mt-6 pb-10">
                 
                 <?php if($sukses_msg): ?>
                     <div class="mb-6 w-full p-4 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center gap-4 shadow-sm">

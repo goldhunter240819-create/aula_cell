@@ -17,7 +17,7 @@ require '../koneksi.php';
     </script>
     <style>
         body { background-color: #0f172a; color: #334155; -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 1.5rem); }
+        .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem); }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .header-curve { border-bottom-left-radius: 2.5rem; border-bottom-right-radius: 2.5rem; box-shadow: 0 4px 20px -2px rgba(37, 99, 235, 0.3); }
     </style>
@@ -33,7 +33,7 @@ require '../koneksi.php';
                 </div>
             </div>
             
-            <main class="px-5">
+            <main class="px-5 pb-10">
                 <div class="flex flex-col gap-3">
                     <?php 
                     $q_jual = mysqli_query($conn, "SELECT t.*, d_m.nama_dompet as dompet_modal, d_p.nama_dompet as dompet_pemasukan FROM transaksi_penjualan t JOIN dompet d_m ON t.id_dompet_modal = d_m.id JOIN dompet d_p ON t.id_dompet_pemasukan = d_p.id ORDER BY t.tanggal DESC LIMIT 50");

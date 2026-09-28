@@ -47,7 +47,7 @@ $foto_url = empty($foto) ? "../aulalogo.png" : "../uploads/" . $foto;
     </script>
     <style>
         body { background-color: #0f172a; color: #334155; -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 1.5rem); }
+        .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem); }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         
         /* The header curve */
@@ -96,7 +96,7 @@ $foto_url = empty($foto) ? "../aulalogo.png" : "../uploads/" . $foto;
             </div>
 
             <!-- Main Body -->
-            <main class="px-5 pt-12">
+            <main class="px-5 pt-12 pb-10">
                 
                 <div class="flex items-center gap-2 font-extrabold text-slate-800 mb-4">
                     <i class="fa-solid fa-wallet text-amber-500"></i>

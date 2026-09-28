@@ -63,7 +63,7 @@ $total_piutang = mysqli_fetch_assoc($q_total)['total'] ?? 0;
     </script>
     <style>
         body { background-color: #0f172a; color: #334155; -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 1.5rem); }
+        .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem); }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .header-curve { border-bottom-left-radius: 2.5rem; border-bottom-right-radius: 2.5rem; box-shadow: 0 4px 20px -2px rgba(37, 99, 235, 0.3); }
     </style>
@@ -83,7 +83,7 @@ $total_piutang = mysqli_fetch_assoc($q_total)['total'] ?? 0;
                 <h2 class="text-3xl font-black tracking-tight">Rp <?= number_format($total_piutang,0,',','.') ?></h2>
             </div>
             
-            <main class="px-5 pt-8">
+            <main class="px-5 pt-8 pb-10">
                 <?php if($sukses_msg): ?>
                     <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center gap-3 text-sm font-bold">
                         <i class="fa-solid fa-circle-check text-xl"></i> <?= $sukses_msg ?>
