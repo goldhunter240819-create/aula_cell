@@ -51,7 +51,7 @@ if(isset($_POST['submit'])) {
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Catat Bisnis - Aula Cell</title>
     <link rel="icon" href="../aulalogo.png" type="image/jpeg">
     <meta name="theme-color" content="#2563eb">
@@ -63,7 +63,7 @@ if(isset($_POST['submit'])) {
     </script>
     <style>
         body { background-color: #0f172a; color: #334155; -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
+        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 1.5rem); }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .header-curve { border-bottom-left-radius: 2.5rem; border-bottom-right-radius: 2.5rem; box-shadow: 0 4px 20px -2px rgba(37, 99, 235, 0.3); }
     </style>

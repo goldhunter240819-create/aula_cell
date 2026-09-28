@@ -22,7 +22,7 @@ $foto_url = empty($foto) ? "../aulalogo.png" : "../uploads/" . $foto;
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <link rel="icon" href="../aulalogo.png" type="image/jpeg">
     <title>Aula Cell - Mobile</title>
     <link rel="manifest" href="manifest.json">
@@ -47,7 +47,7 @@ $foto_url = empty($foto) ? "../aulalogo.png" : "../uploads/" . $foto;
     </script>
     <style>
         body { background-color: #0f172a; color: #334155; -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
+        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 1.5rem); }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         
         /* The header curve */

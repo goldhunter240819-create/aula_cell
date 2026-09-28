@@ -51,7 +51,7 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Catat Umum - Aula Cell</title>
     <link rel="icon" href="../aulalogo.png" type="image/jpeg">
     <meta name="theme-color" content="#2563eb">
@@ -70,7 +70,7 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
     </script>
     <style>
         body { background-color: #0f172a; color: #334155; -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
+        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 1.5rem); }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .header-curve { border-bottom-left-radius: 3rem; border-bottom-right-radius: 3rem; box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.4); }
         .glass-input { background: rgba(255,255,255,0.9); border: 1px solid rgba(226, 232, 240, 0.8); backdrop-filter: blur(10px); }
