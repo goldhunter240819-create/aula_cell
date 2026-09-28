@@ -76,7 +76,7 @@ if(isset($_POST["ubah_password"])){
     </style>
 </head>
 <body class="font-sans antialiased bg-slate-900 flex justify-center items-center h-[100dvh] overflow-hidden md:p-4">
-    <div class="w-full md:max-w-[400px] md:h-[800px] h-[100dvh] bg-slate-50 relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800">
+    <div class="w-full h-[100dvh] md:max-w-[400px] md:h-[95dvh] md:max-h-[850px] bg-slate-50 relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800">
         <div class="flex-1 overflow-y-auto overflow-x-hidden pb-24">
             <div class="bg-gradient-to-r from-blue-700 to-blue-500 header-curve pt-10 pb-10 px-6 relative text-white">
                 <div class="flex items-center gap-4">
