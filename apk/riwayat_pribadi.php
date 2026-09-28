@@ -22,7 +22,7 @@ require '../koneksi.php';
         .header-curve { border-bottom-left-radius: 2.5rem; border-bottom-right-radius: 2.5rem; box-shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.3); }
     </style>
 </head>
-<body class="font-sans antialiased bg-slate-900 flex justify-center items-center h-[100dvh] overflow-hidden">
+<body class="font-sans antialiased bg-slate-900 flex justify-center h-[100dvh] overflow-hidden">
     <div class="w-full h-[100dvh] md:max-w-[400px] md:h-[95dvh] md:max-h-[850px] bg-slate-50 relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800">
         
         <div class="flex-1 overflow-y-auto pb-32 overflow-x-hidden pb-8">
