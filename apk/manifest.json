@@ -1,0 +1,21 @@
+{
+  "name": "Aula Cell Mobile",
+  "short_name": "Aula Cell",
+  "description": "Aplikasi Pencatatan Keuangan Aula Cell",
+  "start_url": "/aula_cell/apk/index.php",
+  "display": "standalone",
+  "background_color": "#e2e8f0",
+  "theme_color": "#1d4ed8",
+  "icons": [
+    {
+      "src": "../logoaula.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "../logoaula.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
