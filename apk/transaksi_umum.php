@@ -86,7 +86,7 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
 <body class="font-sans antialiased bg-slate-900 flex justify-center items-center h-[100dvh] overflow-hidden">
     <div class="w-full h-[100dvh] md:max-w-[400px] md:h-[95dvh] md:max-h-[850px] bg-slate-50 relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800">
         
-        <div class="flex-1 overflow-y-auto overflow-x-hidden pb-24 flex flex-col relative z-0">
+        <div class="flex-1 overflow-y-auto pb-32 overflow-x-hidden pb-24 flex flex-col relative z-0">
             <!-- Header Curve -->
             <div class="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500 header-curve pt-12 pb-14 px-6 relative text-white flex-none overflow-hidden">
                 <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
@@ -159,7 +159,7 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
         </div>
         
         <!-- Navigation Bottom -->
-        <div class="w-full z-50 mt-auto bg-white/90 backdrop-blur-lg border-t border-slate-100 relative shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
+        <div class="absolute bottom-0 left-0 right-0 w-full z-50 bg-white/90 backdrop-blur-lg border-t border-slate-100 relative shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
             <div class="flex justify-around items-end px-2 pb-safe pt-2">
                 <a href="index.php" class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary w-16 pb-2">
                     <i class="fa-solid fa-house text-lg"></i>

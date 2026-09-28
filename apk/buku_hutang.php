@@ -71,7 +71,7 @@ $total_piutang = mysqli_fetch_assoc($q_total)['total'] ?? 0;
 <body class="font-sans antialiased bg-slate-900 flex justify-center items-center h-[100dvh] overflow-hidden">
     <div class="w-full h-[100dvh] md:max-w-[400px] md:h-[95dvh] md:max-h-[850px] bg-slate-50 relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800">
         
-        <div class="flex-1 overflow-y-auto overflow-x-hidden pb-24">
+        <div class="flex-1 overflow-y-auto pb-32 overflow-x-hidden pb-24">
             
             <div class="bg-gradient-to-r from-red-600 to-rose-500 header-curve pt-10 pb-16 px-6 relative text-white">
                 <div class="flex items-center gap-4 mb-6">

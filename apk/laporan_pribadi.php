@@ -43,7 +43,7 @@ krsort($rekap_bulanan);
 </head>
 <body class="font-sans antialiased bg-slate-900 flex justify-center items-center h-[100dvh] overflow-hidden">
     <div class="w-full h-[100dvh] md:max-w-[400px] md:h-[95dvh] md:max-h-[850px] bg-slate-50 relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800">
-        <div class="flex-1 overflow-y-auto overflow-x-hidden pb-24">
+        <div class="flex-1 overflow-y-auto pb-32 overflow-x-hidden pb-24">
             <div class="bg-gradient-to-r from-blue-700 to-blue-500 header-curve pt-10 pb-8 px-6 relative text-white">
                 <div class="flex items-center gap-4 mb-2">
                     <a href="index.php" class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm active:scale-95"><i class="fa-solid fa-arrow-left"></i></a>
@@ -124,7 +124,7 @@ krsort($rekap_bulanan);
 
     
 </main></div>
-        <div class="w-full z-50 mt-auto bg-white border-t border-slate-200 relative shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <div class="absolute bottom-0 left-0 right-0 w-full z-50 bg-white border-t border-slate-200 relative shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
             <div class="flex justify-around items-end px-2 pb-safe pt-2">
                 <a href="index.php" class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary w-16 pb-2">
                     <i class="fa-solid fa-house text-lg"></i>

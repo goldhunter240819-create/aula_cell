@@ -64,7 +64,7 @@ $foto_url = empty($foto) ? "../aulalogo.png" : "../uploads/" . $foto;
     <div class="w-full h-[100dvh] md:max-w-[400px] md:h-[95dvh] md:max-h-[850px] bg-slate-50 relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800">
         
         <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto overflow-x-hidden pb-24">
+        <div class="flex-1 overflow-y-auto pb-32 overflow-x-hidden pb-24">
             
             <!-- Clean Header (Mifhda style but Aula Cell colors) -->
             <div class="bg-gradient-to-r from-blue-700 to-blue-500 header-curve pt-10 pb-16 px-6 relative text-white">
@@ -145,7 +145,7 @@ $foto_url = empty($foto) ? "../aulalogo.png" : "../uploads/" . $foto;
         </div>
 
         <!-- Clean Bottom Nav (Mifhda Style floating) -->
-        <div class="w-full z-50 mt-auto bg-white border-t border-slate-200 relative shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <div class="absolute bottom-0 left-0 right-0 w-full z-50 bg-white border-t border-slate-200 relative shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
             <div class="flex justify-around items-end px-2 pb-safe pt-2">
                 
                 <a href="index.php" class="flex flex-col items-center gap-1 text-primary w-16 pb-2">
