@@ -16,14 +16,14 @@ $user_id = $_SESSION['user_id'];
 $q_u = mysqli_query($conn, "SELECT foto_profil FROM users WHERE id = '$user_id'");
 $r_u = mysqli_fetch_assoc($q_u);
 $foto = $r_u['foto_profil'] ?? '';
-$foto_url = empty($foto) ? "../logoaula.jpeg" : "../uploads/" . $foto;
+$foto_url = empty($foto) ? "../aulalogo.png" : "../uploads/" . $foto;
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="icon" href="../logoaula.jpeg" type="image/jpeg">
+    <link rel="icon" href="../aulalogo.png" type="image/jpeg">
     <title>Aula Cell - Mobile</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2563eb">

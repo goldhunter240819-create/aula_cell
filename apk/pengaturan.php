@@ -9,7 +9,7 @@ $user_id = $_SESSION['user_id'];
 $q_user = mysqli_query($conn, "SELECT * FROM users WHERE id = '$user_id'");
 $user_data = mysqli_fetch_assoc($q_user);
 $foto_profil = $user_data['foto_profil'] ?? '';
-$foto_path = empty($foto_profil) ? "../logoaula.jpeg" : "../uploads/" . $foto_profil;
+$foto_path = empty($foto_profil) ? "../aulalogo.png" : "../uploads/" . $foto_profil;
 
 // 2. Handle Upload Foto
 if(isset($_POST["upload_foto"]) && isset($_FILES["foto"])) {
@@ -53,7 +53,7 @@ if(isset($_POST["ubah_password"])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Profil - Aula Cell</title>
-    <link rel="icon" href="../logoaula.jpeg" type="image/jpeg">
+    <link rel="icon" href="../aulalogo.png" type="image/jpeg">
     <meta name="theme-color" content="#2563eb">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">

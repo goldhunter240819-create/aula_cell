@@ -8,12 +8,12 @@
   "theme_color": "#1d4ed8",
   "icons": [
     {
-      "src": "../logoaula.jpeg",
+      "src": "../aulalogo.png",
       "sizes": "192x192",
       "type": "image/jpeg"
     },
     {
-      "src": "../logoaula.jpeg",
+      "src": "../aulalogo.png",
       "sizes": "512x512",
       "type": "image/jpeg"
     }

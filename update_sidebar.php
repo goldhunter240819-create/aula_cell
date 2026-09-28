@@ -9,7 +9,7 @@ $sidebar_html = <<<HTML
         <style> details > summary { list-style: none; } details > summary::-webkit-details-marker { display: none; } </style>
         <div class="flex items-center gap-3 px-2">
             <div class="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-primary/30 flex-shrink-0">
-                <img src="logoaula.jpeg" alt="Aula Cell" class="w-full h-full object-cover">
+                <img src="aulalogo.png" alt="Aula Cell" class="w-full h-full object-cover">
             </div>
             <div>
                 <h1 class="text-xl font-bold tracking-tight text-white">Aula Cell</h1>

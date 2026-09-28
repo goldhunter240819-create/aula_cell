@@ -33,7 +33,7 @@ if(isset($_POST['login'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="icon" href="../logoaula.jpeg" type="image/jpeg">
+    <link rel="icon" href="../aulalogo.png" type="image/jpeg">
     <title>Login Aula Cell Mobile</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2563eb">
@@ -74,7 +74,7 @@ if(isset($_POST['login'])) {
             
             <div class="flex flex-col items-center mb-8">
                 <div class="w-24 h-24 rounded-2xl bg-white p-1 shadow-lg mb-4">
-                    <img src="../logoaula.jpeg" class="w-full h-full object-cover rounded-xl">
+                    <img src="../aulalogo.png" class="w-full h-full object-cover rounded-xl">
                 </div>
                 <h1 class="text-3xl font-extrabold text-white tracking-tight">Aula Cell</h1>
                 <p class="text-blue-100 font-semibold text-sm">Finance Manager</p>

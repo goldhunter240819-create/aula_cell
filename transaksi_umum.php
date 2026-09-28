@@ -46,7 +46,7 @@ if(isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keuangan Pribadi - Aula Cell</title>
-    <link rel="icon" href="logoaula.jpeg" type="image/jpeg">
+    <link rel="icon" href="aulalogo.png" type="image/jpeg">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -87,7 +87,7 @@ if(isset($_POST['submit'])) {
         <style> details > summary { list-style: none; } details > summary::-webkit-details-marker { display: none; } </style>
         <div class="flex items-center gap-3 px-2">
             <div class="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-primary/30 flex-shrink-0">
-                <img src="logoaula.jpeg" alt="Aula Cell" class="w-full h-full object-cover">
+                <img src="aulalogo.png" alt="Aula Cell" class="w-full h-full object-cover">
             </div>
             <div>
                 <h1 class="text-xl font-bold tracking-tight text-white">Aula Cell</h1>

@@ -36,7 +36,7 @@ if(isset($_POST['login'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Aula Cell</title>
-    <link rel="icon" href="logoaula.jpeg" type="image/jpeg">
+    <link rel="icon" href="aulalogo.png" type="image/jpeg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -75,7 +75,7 @@ if(isset($_POST['login'])) {
     <div class="glass-card w-full max-w-md rounded-3xl p-8 relative z-10 shadow-2xl">
         <div class="flex flex-col items-center mb-8">
             <div class="w-20 h-20 rounded-2xl overflow-hidden shadow-lg shadow-primary/30 mb-4 border border-slate-200">
-                <img src="logoaula.jpeg" alt="Aula Cell Logo" class="w-full h-full object-cover">
+                <img src="aulalogo.png" alt="Aula Cell Logo" class="w-full h-full object-cover">
             </div>
             <h1 class="text-2xl font-bold tracking-tight">Selamat Datang</h1>
             <p class="text-sm text-slate-500 mt-1">Masuk ke sistem manajemen Aula Cell</p>

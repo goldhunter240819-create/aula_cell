@@ -20,7 +20,7 @@ $laba_bulan_ini = mysqli_fetch_assoc($q_laba)['total_laba'] ?? 0;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aula Cell & Personal Finance</title>
-    <link rel="icon" href="logoaula.jpeg" type="image/jpeg">
+    <link rel="icon" href="aulalogo.png" type="image/jpeg">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
@@ -65,7 +65,7 @@ $laba_bulan_ini = mysqli_fetch_assoc($q_laba)['total_laba'] ?? 0;
         <style> details > summary { list-style: none; } details > summary::-webkit-details-marker { display: none; } </style>
         <div class="flex items-center gap-3 px-2">
             <div class="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-primary/30 flex-shrink-0">
-                <img src="logoaula.jpeg" alt="Aula Cell" class="w-full h-full object-cover">
+                <img src="aulalogo.png" alt="Aula Cell" class="w-full h-full object-cover">
             </div>
             <div>
                 <h1 class="text-xl font-bold tracking-tight text-white">Aula Cell</h1>
