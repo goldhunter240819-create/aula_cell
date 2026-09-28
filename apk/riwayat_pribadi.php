@@ -65,6 +65,7 @@ require '../koneksi.php';
                 </div>
             </main>
         </div>
-    </div>
+
+        <?php include 'footer.php'; ?>
 </body>
 </html>

@@ -147,6 +147,7 @@ $total_piutang = ($q_total) ? (mysqli_fetch_assoc($q_total)['total'] ?? 0) : 0;
                 </div>
             </main>
         </div>
-    </div>
+
+        <?php include 'footer.php'; ?>
 </body>
 </html>
