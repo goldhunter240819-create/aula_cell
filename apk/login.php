@@ -69,7 +69,7 @@ if(isset($_POST['login'])) {
 <body class="font-sans antialiased bg-slate-900 flex justify-center h-[100dvh] overflow-hidden">
 
     <!-- Mobile Frame -->
-    <div class="w-full h-[100dvh] md:max-w-[400px] md:h-[95dvh] md:max-h-[850px] bg-slate-50 relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800">
+    <div class="w-full max-w-[400px] h-[100dvh] bg-slate-50 relative shadow-2xl overflow-hidden flex flex-col">
         
         <!-- Curved Blue Background -->
         <div class="absolute top-0 w-full h-80 bg-gradient-to-b from-blue-700 to-blue-500 header-curve z-0"></div>
