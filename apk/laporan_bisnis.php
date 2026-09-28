@@ -50,8 +50,8 @@ krsort($rekap_bulanan);
         .header-curve { border-bottom-left-radius: 2.5rem; border-bottom-right-radius: 2.5rem; box-shadow: 0 4px 20px -2px rgba(37, 99, 235, 0.3); }
     </style>
 </head>
-<body class="font-sans antialiased bg-slate-900 flex justify-center h-[100dvh] overflow-hidden">
-    <div class="w-full max-w-[400px] h-[100dvh] bg-slate-50 relative shadow-2xl overflow-hidden flex flex-col">
+<body class="font-sans antialiased bg-slate-900 m-0 p-0 overflow-hidden">
+    <div class="fixed inset-0 w-full max-w-[28rem] mx-auto bg-slate-50 shadow-2xl overflow-hidden flex flex-col">
         <div class="flex-1 overflow-y-auto pb-32 overflow-x-hidden pb-24">
             <div class="bg-gradient-to-r from-blue-700 to-blue-500 header-curve pt-10 pb-8 px-6 relative text-white">
                 <div class="flex items-center gap-4 mb-2">

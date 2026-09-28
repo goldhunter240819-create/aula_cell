@@ -83,8 +83,8 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
         }
     </style>
 </head>
-<body class="font-sans antialiased bg-slate-900 flex justify-center h-[100dvh] overflow-hidden">
-    <div class="w-full max-w-[400px] h-[100dvh] bg-slate-50 relative shadow-2xl overflow-hidden flex flex-col">
+<body class="font-sans antialiased bg-slate-900 m-0 p-0 overflow-hidden">
+    <div class="fixed inset-0 w-full max-w-[28rem] mx-auto bg-slate-50 shadow-2xl overflow-hidden flex flex-col">
         
         <div class="flex-1 overflow-y-auto pb-32 overflow-x-hidden pb-24 flex flex-col relative z-0">
             <!-- Header Curve -->
