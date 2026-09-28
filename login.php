@@ -16,8 +16,15 @@ if(isset($_POST['login'])) {
     $q = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
     if(mysqli_num_rows($q) > 0) {
         $user = mysqli_fetch_assoc($q);
-        // Verifikasi hash password
-        if(password_verify($password, $user['password'])) {
+        // Verifikasi hash password atau password plaintext (dukungan untuk akun lama)
+        if(password_verify($password, $user['password']) || $password === $user['password']) {
+            
+            // Auto-upgrade password ke hash jika masih plaintext
+            if($password === $user['password'] && !password_verify($password, $user['password'])) {
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                mysqli_query($conn, "UPDATE users SET password = '$hashed_password' WHERE id = " . $user['id']);
+            }
+
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['nama_lengkap'] = $user['nama_lengkap'];
             header("Location: index.php");
