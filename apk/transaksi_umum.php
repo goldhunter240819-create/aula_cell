@@ -83,7 +83,7 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
         }
     </style>
 </head>
-<body class="font-sans antialiased bg-slate-900 flex justify-center items-center h-[100dvh] overflow-hidden md:p-4">
+<body class="font-sans antialiased bg-slate-900 flex justify-center items-center h-[100dvh] overflow-hidden">
     <div class="w-full h-[100dvh] md:max-w-[400px] md:h-[95dvh] md:max-h-[850px] bg-slate-50 relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800">
         
         <div class="flex-1 overflow-y-auto overflow-x-hidden pb-24 flex flex-col relative z-0">
