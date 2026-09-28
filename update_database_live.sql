@@ -5,6 +5,7 @@
 -- Abaikan error jika kolom sudah ada.
 ALTER TABLE dompet ADD COLUMN tipe ENUM('Pribadi', 'Bisnis') NOT NULL DEFAULT 'Bisnis' AFTER nama_dompet;
 ALTER TABLE transaksi_penjualan ADD COLUMN status_pembayaran ENUM('Lunas', 'Hutang') DEFAULT 'Lunas' AFTER status;
+ALTER TABLE users ADD COLUMN foto_profil VARCHAR(255) DEFAULT NULL;
 
 -- 2. Pastikan dompet pribadi diset sebagai 'Pribadi'
 UPDATE dompet SET tipe='Pribadi' WHERE nama_dompet LIKE '%Pribadi%';
