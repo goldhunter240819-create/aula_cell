@@ -63,12 +63,12 @@ if(isset($_POST['submit'])) {
     </script>
     <style>
         body { background-color: #0f172a; color: #334155; -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem); }
+        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 1rem); }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .header-curve { border-bottom-left-radius: 2.5rem; border-bottom-right-radius: 2.5rem; box-shadow: 0 4px 20px -2px rgba(37, 99, 235, 0.3); }
     </style>
 </head>
-<body class="font-sans antialiased md:flex md:justify-center md:items-center min-h-screen md:p-4">
+<body class="font-sans antialiased md:flex md:justify-center md:items-center h-[100dvh] overflow-hidden md:p-4">
     <div class="w-full md:max-w-[400px] md:h-[800px] h-screen bg-bglight relative md:shadow-2xl md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800 md:ring-4 md:ring-slate-900">
         <div class="flex-1 overflow-y-auto overflow-x-hidden pb-24">
             <div class="bg-gradient-to-r from-blue-700 to-blue-500 header-curve pt-10 pb-10 px-6 relative text-white">

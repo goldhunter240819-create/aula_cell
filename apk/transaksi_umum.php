@@ -70,7 +70,7 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
     </script>
     <style>
         body { background-color: #0f172a; color: #334155; -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem); }
+        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 1rem); }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .header-curve { border-bottom-left-radius: 3rem; border-bottom-right-radius: 3rem; box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.4); }
         .glass-input { background: rgba(255,255,255,0.9); border: 1px solid rgba(226, 232, 240, 0.8); backdrop-filter: blur(10px); }
@@ -83,7 +83,7 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
         }
     </style>
 </head>
-<body class="font-sans antialiased md:flex md:justify-center md:items-center min-h-screen md:p-4">
+<body class="font-sans antialiased md:flex md:justify-center md:items-center h-[100dvh] overflow-hidden md:p-4">
     <div class="w-full md:max-w-[400px] md:h-[800px] h-screen bg-slate-50 relative md:shadow-[0_20px_50px_rgba(0,0,0,0.3)] md:rounded-[2.5rem] overflow-hidden flex flex-col md:border-8 md:border-slate-800 md:ring-4 md:ring-slate-900">
         
         <div class="flex-1 overflow-y-auto overflow-x-hidden pb-24 flex flex-col relative z-0">
