@@ -2,7 +2,7 @@
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
         <!-- Clean Bottom Nav (Mifhda Style floating) -->
-        <div class="absolute bottom-0 left-0 right-0 w-full z-50 bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <div class="w-full z-50 mt-auto bg-white border-t border-slate-200 relative shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
             <div class="flex justify-around items-end px-2 pb-safe pt-2">
                 
                 <a href="index.php" class="flex flex-col items-center gap-1 <?= $current_page == 'index.php' ? 'text-primary' : 'text-slate-400 hover:text-primary' ?> transition-colors w-16 pb-2">
