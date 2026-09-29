@@ -158,7 +158,94 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
             </main>
         </div>
         
+        <!-- Modal Pemasukan -->
+        <div id="modalPemasukan" class="fixed inset-0 z-50 flex items-end justify-center" style="display:none;">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeModal('modalPemasukan')"></div>
+            <div class="relative w-full max-w-[28rem] bg-white rounded-t-[2rem] p-6 pb-8 modal-enter">
+                <div class="w-10 h-1 bg-slate-200 rounded-full mx-auto mb-5"></div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-arrow-down text-emerald-500"></i>
+                    </div>
+                    <h3 class="text-lg font-black text-slate-800">Pemasukan Usaha</h3>
+                </div>
+                <form action="" method="POST" class="flex flex-col gap-4">
+                    <input type="hidden" name="jenis" value="Pemasukan">
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-1.5">Tanggal</label>
+                        <input type="date" name="tanggal" required value="<?= date('Y-m-d') ?>" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-1.5">Nominal (Rp)</label>
+                        <input type="number" name="nominal" required placeholder="50000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-lg">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-1.5">Dompet</label>
+                        <select name="id_dompet" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                            <?= $dompet_options ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-1.5">Keterangan</label>
+                        <input type="text" name="keterangan" required placeholder="Contoh: Suntik modal, dll" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                    </div>
+                    <button type="submit" name="submit" class="w-full mt-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black py-3.5 rounded-xl shadow-lg shadow-emerald-500/30 active:scale-95 transition-transform">
+                        <i class="fa-solid fa-check mr-1"></i> Simpan Pemasukan
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Pengeluaran -->
+        <div id="modalPengeluaran" class="fixed inset-0 z-50 flex items-end justify-center" style="display:none;">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeModal('modalPengeluaran')"></div>
+            <div class="relative w-full max-w-[28rem] bg-white rounded-t-[2rem] p-6 pb-8 modal-enter">
+                <div class="w-10 h-1 bg-slate-200 rounded-full mx-auto mb-5"></div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-arrow-up text-red-500"></i>
+                    </div>
+                    <h3 class="text-lg font-black text-slate-800">Pengeluaran Usaha</h3>
+                </div>
+                <form action="" method="POST" class="flex flex-col gap-4">
+                    <input type="hidden" name="jenis" value="Pengeluaran">
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-1.5">Tanggal</label>
+                        <input type="date" name="tanggal" required value="<?= date('Y-m-d') ?>" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-1.5">Nominal (Rp)</label>
+                        <input type="number" name="nominal" required placeholder="50000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all text-lg">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-1.5">Dompet</label>
+                        <select name="id_dompet" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
+                            <?= $dompet_options ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-1.5">Keterangan</label>
+                        <input type="text" name="keterangan" required placeholder="Contoh: Bayar listrik, sewa ruko" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all">
+                    </div>
+                    <button type="submit" name="submit" class="w-full mt-2 bg-gradient-to-r from-red-500 to-orange-500 text-white font-black py-3.5 rounded-xl shadow-lg shadow-red-500/30 active:scale-95 transition-transform">
+                        <i class="fa-solid fa-check mr-1"></i> Simpan Pengeluaran
+                    </button>
+                </form>
+            </div>
+        </div>
+
         <!-- Navigation Bottom -->
         <?php include 'footer.php'; ?>
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    </script>
 </body>
 </html>
