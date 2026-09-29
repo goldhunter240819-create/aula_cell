@@ -7,6 +7,7 @@ $error_msg = "";
 // Jika form disubmit
 if(isset($_POST['submit'])) {
     $jenis = mysqli_real_escape_string($conn, $_POST['jenis']);
+    $id_kategori = (int)$_POST['id_kategori'];
     $id_dompet = (int)$_POST['id_dompet'];
     $nominal = (int)$_POST['nominal'];
     $keterangan = mysqli_real_escape_string($conn, $_POST['keterangan']);
@@ -17,9 +18,9 @@ if(isset($_POST['submit'])) {
     try {
         // 1. Insert ke tabel transaksi_umum
         $q_insert = "INSERT INTO transaksi_umum 
-                    (tanggal, jenis, id_dompet, nominal, keterangan) 
+                    (tanggal, jenis, id_kategori, id_dompet, nominal, keterangan) 
                     VALUES 
-                    ('$tanggal', '$jenis', $id_dompet, $nominal, '$keterangan')";
+                    ('$tanggal', '$jenis', $id_kategori, $id_dompet, $nominal, '$keterangan')";
         
         if(!mysqli_query($conn, $q_insert)) {
             throw new Exception("Gagal input transaksi: " . mysqli_error($conn));
@@ -213,6 +214,29 @@ if(isset($_POST['submit'])) {
                     <input type="text" inputmode="numeric" required placeholder="10.000" oninput="formatNominal(this, 'nominalDesktopPribadi')" class="w-full px-4 py-3 rounded-xl input-glass transition-all text-lg font-bold">
                 </div>
                 
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Kategori</label>
+                    <select name="id_kategori" required class="w-full px-4 py-3 rounded-xl input-glass transition-all [&>option]:bg-white">
+                        <option value="">-- Pilih Kategori --</option>
+                        <optgroup label="Pemasukan">
+                            <?php 
+                            $q_kat_in = mysqli_query($conn, "SELECT * FROM kategori WHERE tipe = 'Pribadi' AND jenis = 'Pemasukan' ORDER BY nama_kategori");
+                            while($row = mysqli_fetch_assoc($q_kat_in)) {
+                                echo "<option value='{$row['id']}'>{$row['nama_kategori']}</option>";
+                            }
+                            ?>
+                        </optgroup>
+                        <optgroup label="Pengeluaran">
+                            <?php 
+                            $q_kat_out = mysqli_query($conn, "SELECT * FROM kategori WHERE tipe = 'Pribadi' AND jenis = 'Pengeluaran' ORDER BY nama_kategori");
+                            while($row = mysqli_fetch_assoc($q_kat_out)) {
+                                echo "<option value='{$row['id']}'>{$row['nama_kategori']}</option>";
+                            }
+                            ?>
+                        </optgroup>
+                    </select>
+                </div>
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Dompet / Rekening</label>

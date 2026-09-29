@@ -7,6 +7,7 @@ $error_msg = "";
 // Jika form disubmit
 if(isset($_POST['submit'])) {
     $jenis = mysqli_real_escape_string($conn, $_POST['jenis']);
+    $id_kategori = (int)$_POST['id_kategori'];
     $id_dompet = (int)$_POST['id_dompet'];
     $nominal = (int)$_POST['nominal'];
     $keterangan = mysqli_real_escape_string($conn, $_POST['keterangan']);
@@ -17,9 +18,9 @@ if(isset($_POST['submit'])) {
     try {
         // 1. Insert ke tabel transaksi_umum
         $q_insert = "INSERT INTO transaksi_umum 
-                    (tanggal, jenis, id_dompet, nominal, keterangan) 
+                    (tanggal, jenis, id_kategori, id_dompet, nominal, keterangan) 
                     VALUES 
-                    ('$tanggal', '$jenis', $id_dompet, $nominal, '$keterangan')";
+                    ('$tanggal', '$jenis', $id_kategori, $id_dompet, $nominal, '$keterangan')";
         
         if(!mysqli_query($conn, $q_insert)) {
             throw new Exception("Gagal input transaksi: " . mysqli_error($conn));
@@ -46,6 +47,18 @@ $q_dompet = mysqli_query($conn, "SELECT * FROM dompet ORDER BY tipe, nama_dompet
 while($d = mysqli_fetch_assoc($q_dompet)) {
     $selected = ($d['nama_dompet'] == 'Kas Pribadi') ? 'selected' : '';
     $dompet_options .= "<option value=\"{$d['id']}\" $selected>{$d['nama_dompet']} ({$d['tipe']})</option>";
+}
+
+// Persiapkan opsi kategori
+$kat_pemasukan = "";
+$kat_pengeluaran = "";
+$q_kat = mysqli_query($conn, "SELECT * FROM kategori WHERE tipe = 'Pribadi' ORDER BY jenis, nama_kategori");
+while($k = mysqli_fetch_assoc($q_kat)) {
+    if($k['jenis'] == 'Pemasukan') {
+        $kat_pemasukan .= "<option value=\"{$k['id']}\">{$k['nama_kategori']}</option>";
+    } else {
+        $kat_pengeluaran .= "<option value=\"{$k['id']}\">{$k['nama_kategori']}</option>";
+    }
 }
 ?><!DOCTYPE html>
 <html lang="id">
@@ -181,6 +194,13 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
                         <input type="text" inputmode="numeric" required placeholder="10.000" oninput="formatNominal(this, 'nominalMasuk')" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
                     </div>
                     <div>
+                        <label class="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Kategori</label>
+                        <select name="id_kategori" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+                            <option value="">-- Pilih Kategori --</option>
+                            <?= $kat_pemasukan ?>
+                        </select>
+                    </div>
+                    <div>
                         <label class="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Dompet</label>
                         <select name="id_dompet" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
                             <?= $dompet_options ?>
@@ -218,6 +238,13 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
                         <label class="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Nominal (Rp)</label>
                         <input type="hidden" name="nominal" id="nominalKeluar">
                         <input type="text" inputmode="numeric" required placeholder="10.000" oninput="formatNominal(this, 'nominalKeluar')" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Kategori</label>
+                        <select name="id_kategori" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500">
+                            <option value="">-- Pilih Kategori --</option>
+                            <?= $kat_pengeluaran ?>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Dompet</label>
