@@ -7,8 +7,8 @@ $error_msg = "";
 // Jika tambah kategori
 if(isset($_POST['tambah'])) {
     $nama = mysqli_real_escape_string($conn, $_POST['nama_kategori']);
-    $jenis = 'Produk';
-    $tipe = 'Bisnis';
+    $jenis = mysqli_real_escape_string($conn, $_POST['jenis']);
+    $tipe = mysqli_real_escape_string($conn, $_POST['tipe']);
     
     if(mysqli_query($conn, "INSERT INTO kategori (nama_kategori, jenis, tipe) VALUES ('$nama', '$jenis', '$tipe')")) {
         $sukses_msg = "Kategori berhasil ditambahkan!";
@@ -161,7 +161,22 @@ if(isset($_GET['hapus'])) {
                 <form method="POST" class="flex flex-col gap-4">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Nama Kategori</label>
-                        <input type="text" name="nama_kategori" required placeholder="Cth: Pulsa Regular" class="w-full px-4 py-3 rounded-xl input-glass">
+                        <input type="text" name="nama_kategori" required placeholder="Cth: Pulsa Regular, atau Gaji, dll" class="w-full px-4 py-3 rounded-xl input-glass">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Tipe</label>
+                        <select name="tipe" required class="w-full px-4 py-3 rounded-xl input-glass">
+                            <option value="Bisnis">Bisnis</option>
+                            <option value="Pribadi">Pribadi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Jenis</label>
+                        <select name="jenis" required class="w-full px-4 py-3 rounded-xl input-glass">
+                            <option value="Produk">Produk Jualan (Hanya utk Bisnis)</option>
+                            <option value="Pemasukan">Pemasukan (Uang Masuk)</option>
+                            <option value="Pengeluaran">Pengeluaran (Uang Keluar)</option>
+                        </select>
                     </div>
 
                     <button type="submit" name="tambah" class="w-full bg-primary hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg active:scale-95 transition-transform mt-2">
@@ -179,6 +194,8 @@ if(isset($_GET['hapus'])) {
                         <thead>
                             <tr class="border-b border-slate-200">
                                 <th class="py-3 px-2 font-bold text-slate-500 text-sm">Nama Kategori</th>
+                                <th class="py-3 px-2 font-bold text-slate-500 text-sm">Tipe</th>
+                                <th class="py-3 px-2 font-bold text-slate-500 text-sm">Jenis</th>
                                 <th class="py-3 px-2 font-bold text-slate-500 text-sm text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -189,6 +206,16 @@ if(isset($_GET['hapus'])) {
                             ?>
                             <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                                 <td class="py-3 px-2 font-bold text-slate-800 text-sm"><?= $row['nama_kategori'] ?></td>
+                                <td class="py-3 px-2 font-bold text-slate-500 text-sm"><?= $row['tipe'] ?></td>
+                                <td class="py-3 px-2 font-bold text-slate-500 text-sm">
+                                    <?php if($row['jenis'] == 'Produk'): ?>
+                                        <span class="px-2 py-1 rounded bg-blue-100 text-blue-600 text-xs">Produk</span>
+                                    <?php elseif($row['jenis'] == 'Pemasukan'): ?>
+                                        <span class="px-2 py-1 rounded bg-emerald-100 text-emerald-600 text-xs">Masuk</span>
+                                    <?php else: ?>
+                                        <span class="px-2 py-1 rounded bg-red-100 text-red-600 text-xs">Keluar</span>
+                                    <?php endif; ?>
+                                </td>
 
                                 <td class="py-3 px-2 text-right">
                                     <a href="?hapus=<?= $row['id'] ?>" onclick="return confirm('Yakin hapus kategori ini?')" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors">
