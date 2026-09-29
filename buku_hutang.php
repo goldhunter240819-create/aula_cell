@@ -44,7 +44,7 @@ $q_hutang = mysqli_query($conn, "
 
 // Hitung total piutang (uang di luar)
 $q_total = mysqli_query($conn, "SELECT SUM(harga_jual) as total FROM transaksi_penjualan WHERE status_pembayaran = 'Hutang'");
-$total_piutang = mysqli_fetch_assoc($q_total)['total'] ?? 0;
+$total_piutang = ($q_total) ? (mysqli_fetch_assoc($q_total)['total'] ?? 0) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -183,7 +183,7 @@ $total_piutang = mysqli_fetch_assoc($q_total)['total'] ?? 0;
         <div class="glass-card rounded-2xl p-6 lg:p-8">
             <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
                 <h3 class="font-bold text-lg text-slate-800">Daftar Tagihan Berjalan</h3>
-                <span class="bg-red-50 text-red-500 px-3 py-1 rounded-full text-xs font-bold"><?= mysqli_num_rows($q_hutang) ?> Tagihan</span>
+                <span class="bg-red-50 text-red-500 px-3 py-1 rounded-full text-xs font-bold"><?= $q_hutang ? mysqli_num_rows($q_hutang) : 0 ?> Tagihan</span>
             </div>
 
             <div class="overflow-x-auto">
@@ -198,7 +198,7 @@ $total_piutang = mysqli_fetch_assoc($q_total)['total'] ?? 0;
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if(mysqli_num_rows($q_hutang) > 0): ?>
+                        <?php if($q_hutang && mysqli_num_rows($q_hutang) > 0): ?>
                             <?php while($row = mysqli_fetch_assoc($q_hutang)): ?>
                             <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors group">
                                 <td class="py-4 px-4">
