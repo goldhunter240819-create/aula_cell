@@ -64,9 +64,86 @@ if(isset($_POST['login'])) {
             border-bottom-left-radius: 3rem;
             border-bottom-right-radius: 3rem;
         }
+        
+        /* Biometric Button Styles */
+        @keyframes fingerprint-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+        }
+        @keyframes fingerprint-scan {
+            0% { transform: translateY(100%); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100%); opacity: 0; }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        @keyframes success-pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .biometric-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .biometric-btn:hover {
+            transform: translateY(-2px);
+        }
+        .biometric-btn:active {
+            transform: scale(0.96);
+        }
+        .biometric-btn.scanning {
+            animation: fingerprint-pulse 1.5s ease-in-out infinite;
+        }
+        .biometric-btn.scanning .scan-line {
+            display: block;
+            animation: fingerprint-scan 1.5s ease-in-out infinite;
+        }
+        .biometric-btn .scan-line {
+            display: none;
+            position: absolute;
+            left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.8), transparent);
+            z-index: 10;
+        }
+        
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #cbd5e1, transparent);
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(-120%);
+            z-index: 9999;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 90%;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body class="font-sans antialiased bg-slate-900 m-0 p-0 overflow-hidden">
+
+    <!-- Toast Notification -->
+    <div id="biometricToast" class="toast">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 px-5 py-3.5 flex items-center gap-3">
+            <div id="toastIcon" class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-fingerprint text-emerald-500 text-sm"></i>
+            </div>
+            <p id="toastMsg" class="text-sm font-bold text-slate-700"></p>
+        </div>
+    </div>
 
     <!-- Mobile Frame -->
     <div class="fixed inset-0 w-full max-w-[28rem] mx-auto bg-slate-50 shadow-2xl overflow-hidden flex flex-col">
@@ -121,8 +198,25 @@ if(isset($_POST['login'])) {
                 </div>
                 
                 <button type="submit" name="login" 
-                    class="w-full mt-8 bg-primary hover:bg-blue-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 active:scale-95 transition-transform">
+                    class="w-full mt-6 bg-primary hover:bg-blue-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 active:scale-95 transition-transform">
                     Masuk
+                </button>
+
+                <!-- Divider -->
+                <div id="biometricDivider" class="hidden mt-6 mb-4 flex items-center gap-3">
+                    <div class="divider-line"></div>
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">atau</span>
+                    <div class="divider-line"></div>
+                </div>
+
+                <!-- Biometric Login Button -->
+                <button type="button" id="biometricLoginBtn" onclick="loginWithBiometric()" 
+                    class="hidden biometric-btn w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-3">
+                    <div class="scan-line"></div>
+                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                        <i class="fa-solid fa-fingerprint text-lg" id="biometricIcon"></i>
+                    </div>
+                    <span id="biometricBtnText">Masuk dengan Biometrik</span>
                 </button>
             </form>
             
@@ -174,6 +268,166 @@ if(isset($_POST['login'])) {
                 alert("Sistem belum siap atau aplikasi sudah diinstall. \n\nTips: Klik icon titik tiga di pojok kanan atas browser (Chrome), lalu pilih 'Tambahkan ke Layar Utama' atau 'Install Aplikasi'.");
             }
         });
+
+        // =========================================
+        // BIOMETRIC LOGIN (WebAuthn)
+        // =========================================
+        
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('biometricToast');
+            const msg = document.getElementById('toastMsg');
+            const icon = document.getElementById('toastIcon');
+            
+            msg.textContent = message;
+            
+            if (type === 'success') {
+                icon.className = 'w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0';
+                icon.innerHTML = '<i class="fa-solid fa-check text-emerald-500 text-sm"></i>';
+            } else if (type === 'error') {
+                icon.className = 'w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0';
+                icon.innerHTML = '<i class="fa-solid fa-xmark text-red-500 text-sm"></i>';
+            } else {
+                icon.className = 'w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0';
+                icon.innerHTML = '<i class="fa-solid fa-fingerprint text-blue-500 text-sm"></i>';
+            }
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+        
+        // Cek apakah browser support WebAuthn & ada credential terdaftar
+        async function initBiometric() {
+            // Cek browser support
+            if (!window.PublicKeyCredential) return;
+            
+            try {
+                const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+                if (!available) return;
+            } catch(e) {
+                return;
+            }
+            
+            // Cek apakah ada credential terdaftar di server
+            try {
+                const res = await fetch('api_biometric.php?action=check');
+                const data = await res.json();
+                
+                if (data.success && data.has_credentials) {
+                    // Tampilkan tombol biometrik
+                    document.getElementById('biometricDivider').classList.remove('hidden');
+                    document.getElementById('biometricDivider').classList.add('flex');
+                    document.getElementById('biometricLoginBtn').classList.remove('hidden');
+                    document.getElementById('biometricLoginBtn').classList.add('flex');
+                }
+            } catch(e) {
+                console.log('Biometric check failed:', e);
+            }
+        }
+        
+        // Login dengan biometrik
+        async function loginWithBiometric() {
+            const btn = document.getElementById('biometricLoginBtn');
+            const btnText = document.getElementById('biometricBtnText');
+            const btnIcon = document.getElementById('biometricIcon');
+            
+            // Start scanning animation
+            btn.classList.add('scanning');
+            btnText.textContent = 'Memverifikasi...';
+            btn.disabled = true;
+            
+            try {
+                // 1. Ambil options dari server
+                const optRes = await fetch('api_biometric.php?action=login_options');
+                const optData = await optRes.json();
+                
+                if (!optData.success) {
+                    throw new Error(optData.error);
+                }
+                
+                // 2. Konversi challenge & credential IDs
+                const publicKey = optData.publicKey;
+                publicKey.challenge = base64urlToBuffer(publicKey.challenge);
+                
+                if (publicKey.allowCredentials) {
+                    publicKey.allowCredentials = publicKey.allowCredentials.map(cred => ({
+                        ...cred,
+                        id: base64urlToBuffer(cred.id)
+                    }));
+                }
+                
+                // 3. Minta browser untuk verifikasi biometrik
+                const assertion = await navigator.credentials.get({ publicKey });
+                
+                // 4. Kirim hasilnya ke server
+                const verifyRes = await fetch('api_biometric.php?action=login_complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: assertion.id,
+                        rawId: bufferToBase64url(assertion.rawId),
+                        response: {
+                            authenticatorData: bufferToBase64url(assertion.response.authenticatorData),
+                            clientDataJSON: bufferToBase64url(assertion.response.clientDataJSON),
+                            signature: bufferToBase64url(assertion.response.signature)
+                        },
+                        type: assertion.type
+                    })
+                });
+                
+                const verifyData = await verifyRes.json();
+                
+                if (verifyData.success) {
+                    // Success animation
+                    btn.classList.remove('scanning');
+                    btn.className = btn.className.replace('from-emerald-500 to-teal-500', 'from-emerald-400 to-emerald-500');
+                    btnIcon.className = 'fa-solid fa-check text-lg';
+                    btnText.textContent = 'Berhasil! Mengalihkan...';
+                    
+                    showToast('Login biometrik berhasil! Selamat datang, ' + verifyData.user, 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'index.php';
+                    }, 1200);
+                } else {
+                    throw new Error(verifyData.error);
+                }
+                
+            } catch(err) {
+                btn.classList.remove('scanning');
+                btn.disabled = false;
+                btnText.textContent = 'Masuk dengan Biometrik';
+                btnIcon.className = 'fa-solid fa-fingerprint text-lg';
+                
+                if (err.name === 'NotAllowedError') {
+                    showToast('Verifikasi biometrik dibatalkan', 'error');
+                } else {
+                    showToast(err.message || 'Gagal verifikasi biometrik', 'error');
+                }
+            }
+        }
+        
+        // Utility: base64url <-> ArrayBuffer
+        function base64urlToBuffer(base64url) {
+            const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+            const padLen = (4 - base64.length % 4) % 4;
+            const padded = base64 + '='.repeat(padLen);
+            const binary = atob(padded);
+            const buffer = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                buffer[i] = binary.charCodeAt(i);
+            }
+            return buffer.buffer;
+        }
+        
+        function bufferToBase64url(buffer) {
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            bytes.forEach(b => binary += String.fromCharCode(b));
+            return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+        
+        // Init on page load
+        initBiometric();
     </script>
 </body>
 </html>

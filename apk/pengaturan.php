@@ -159,12 +159,64 @@ if(isset($_POST["ubah_password"])){
         </button>
     </form>
     
+    <!-- Biometric Section -->
+    <div id="biometricSection" class="mb-4" style="display:none;">
+        <div class="w-full bg-white border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 rounded-[1.25rem]">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-fingerprint"></i>
+                    </div>
+                    <div class="text-left">
+                        <h4 class="font-bold text-sm text-slate-800">Login Biometrik</h4>
+                        <p class="text-[10px] text-slate-500 font-semibold">Sidik jari / Face ID</p>
+                    </div>
+                </div>
+                <div id="biometricStatus" class="flex items-center gap-1.5 text-[10px] font-extrabold px-2.5 py-1 rounded-full">
+                    <!-- Status diisi via JS -->
+                </div>
+            </div>
+            
+            <!-- Info biometrik terdaftar -->
+            <div id="biometricInfo" class="mb-3 text-xs text-slate-500 font-semibold bg-slate-50 rounded-xl p-3 hidden">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fa-solid fa-circle-info text-blue-400"></i>
+                    <span id="biometricInfoText">Memuat...</span>
+                </div>
+            </div>
+
+            <!-- Register Button -->
+            <button id="btnRegisterBiometric" onclick="registerBiometric()" 
+                class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold py-3 rounded-xl shadow-lg shadow-emerald-500/30 active:scale-95 transition-all flex items-center justify-center gap-2 text-sm">
+                <i class="fa-solid fa-fingerprint"></i>
+                <span id="btnRegisterText">Daftarkan Biometrik</span>
+            </button>
+
+            <!-- Remove Button (hidden by default) -->
+            <button id="btnRemoveBiometric" onclick="removeBiometric()" 
+                class="hidden w-full mt-2 bg-red-50 border border-red-100 text-red-500 font-extrabold py-3 rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2 text-sm">
+                <i class="fa-solid fa-trash-can"></i> Hapus Biometrik
+            </button>
+        </div>
+    </div>
+
     <a href="logout.php" class="mt-4 w-full flex items-center justify-center gap-2 p-4 rounded-[1.25rem] bg-red-50 text-red-600 font-black border border-red-100 shadow-sm active:scale-95 transition-transform">
         <i class="fa-solid fa-power-off"></i> Keluar Aplikasi
     </a>
 
             </main>
         </div>
+
+    <!-- Toast Notification -->
+    <div id="biometricToast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] transition-all duration-400 -translate-y-[120%] max-w-[90%]" style="transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 px-5 py-3.5 flex items-center gap-3">
+            <div id="toastIcon" class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-fingerprint text-emerald-500 text-sm"></i>
+            </div>
+            <p id="toastMsg" class="text-sm font-bold text-slate-700"></p>
+        </div>
+    </div>
+
     <script>
         function togglePasswordForm() {
             const form = document.getElementById('form_password');
@@ -178,6 +230,225 @@ if(isset($_POST["ubah_password"])){
                 icon.classList.remove('rotate-180');
             }
         }
+
+        // =============================================
+        // Toast
+        // =============================================
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('biometricToast');
+            const msg = document.getElementById('toastMsg');
+            const icon = document.getElementById('toastIcon');
+            
+            msg.textContent = message;
+            
+            if (type === 'success') {
+                icon.className = 'w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0';
+                icon.innerHTML = '<i class="fa-solid fa-check text-emerald-500 text-sm"></i>';
+            } else if (type === 'error') {
+                icon.className = 'w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0';
+                icon.innerHTML = '<i class="fa-solid fa-xmark text-red-500 text-sm"></i>';
+            } else {
+                icon.className = 'w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0';
+                icon.innerHTML = '<i class="fa-solid fa-fingerprint text-blue-500 text-sm"></i>';
+            }
+            
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+            setTimeout(() => { toast.style.transform = 'translateX(-50%) translateY(-120%)'; }, 3500);
+        }
+
+        // =============================================
+        // Biometric Management
+        // =============================================
+        
+        // Utility: base64url <-> ArrayBuffer
+        function base64urlToBuffer(base64url) {
+            const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+            const padLen = (4 - base64.length % 4) % 4;
+            const padded = base64 + '='.repeat(padLen);
+            const binary = atob(padded);
+            const buffer = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                buffer[i] = binary.charCodeAt(i);
+            }
+            return buffer.buffer;
+        }
+        
+        function bufferToBase64url(buffer) {
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            bytes.forEach(b => binary += String.fromCharCode(b));
+            return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+
+        async function initBiometricSettings() {
+            // Cek browser support
+            if (!window.PublicKeyCredential) return;
+            
+            try {
+                const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+                if (!available) return;
+            } catch(e) {
+                return;
+            }
+
+            // Show biometric section
+            document.getElementById('biometricSection').style.display = 'block';
+            
+            // Cek status
+            await refreshBiometricStatus();
+        }
+
+        async function refreshBiometricStatus() {
+            try {
+                const res = await fetch('api_biometric.php?action=check');
+                const data = await res.json();
+                
+                const statusEl = document.getElementById('biometricStatus');
+                const infoEl = document.getElementById('biometricInfo');
+                const infoText = document.getElementById('biometricInfoText');
+                const btnRegister = document.getElementById('btnRegisterBiometric');
+                const btnRemove = document.getElementById('btnRemoveBiometric');
+                const btnRegisterText = document.getElementById('btnRegisterText');
+                
+                if (data.user_has_biometric) {
+                    statusEl.className = 'flex items-center gap-1.5 text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600';
+                    statusEl.innerHTML = '<i class="fa-solid fa-shield-check"></i> Aktif';
+                    
+                    // Ambil detail credential
+                    const listRes = await fetch('api_biometric.php?action=list');
+                    const listData = await listRes.json();
+                    
+                    if (listData.success && listData.credentials.length > 0) {
+                        const cred = listData.credentials[0];
+                        const createdDate = new Date(cred.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                        infoText.textContent = `${cred.device_name} • Didaftarkan ${createdDate} • Digunakan ${cred.sign_count}x`;
+                        infoEl.classList.remove('hidden');
+                    }
+                    
+                    btnRegisterText.textContent = 'Tambah Perangkat Baru';
+                    btnRemove.classList.remove('hidden');
+                    btnRemove.classList.add('flex');
+                } else {
+                    statusEl.className = 'flex items-center gap-1.5 text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-500';
+                    statusEl.innerHTML = '<i class="fa-solid fa-circle-minus"></i> Nonaktif';
+                    
+                    infoEl.classList.add('hidden');
+                    btnRegisterText.textContent = 'Daftarkan Biometrik';
+                    btnRemove.classList.add('hidden');
+                }
+            } catch(e) {
+                console.error('Failed to check biometric status:', e);
+            }
+        }
+
+        async function registerBiometric() {
+            const btn = document.getElementById('btnRegisterBiometric');
+            const btnText = document.getElementById('btnRegisterText');
+            const originalText = btnText.textContent;
+            
+            btn.disabled = true;
+            btnText.textContent = 'Memverifikasi...';
+            
+            try {
+                // 1. Get registration options
+                const optRes = await fetch('api_biometric.php?action=register_options');
+                const optData = await optRes.json();
+                
+                if (!optData.success) throw new Error(optData.error);
+                
+                // 2. Prepare options
+                const publicKey = optData.publicKey;
+                publicKey.challenge = base64urlToBuffer(publicKey.challenge);
+                publicKey.user.id = base64urlToBuffer(publicKey.user.id);
+                
+                if (publicKey.excludeCredentials) {
+                    publicKey.excludeCredentials = publicKey.excludeCredentials.map(c => ({
+                        ...c, id: base64urlToBuffer(c.id)
+                    }));
+                }
+                
+                // 3. Create credential (triggers biometric prompt)
+                const credential = await navigator.credentials.create({ publicKey });
+                
+                // 4. Send to server
+                const saveRes = await fetch('api_biometric.php?action=register_complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: credential.id,
+                        rawId: bufferToBase64url(credential.rawId),
+                        response: {
+                            attestationObject: bufferToBase64url(credential.response.attestationObject),
+                            clientDataJSON: bufferToBase64url(credential.response.clientDataJSON),
+                            publicKey: bufferToBase64url(credential.response.getPublicKey ? credential.response.getPublicKey() : new ArrayBuffer(0))
+                        },
+                        type: credential.type,
+                        deviceName: getDeviceName()
+                    })
+                });
+                
+                const saveData = await saveRes.json();
+                
+                if (saveData.success) {
+                    showToast('Biometrik berhasil didaftarkan! 🎉', 'success');
+                    await refreshBiometricStatus();
+                } else {
+                    throw new Error(saveData.error);
+                }
+                
+            } catch(err) {
+                if (err.name === 'NotAllowedError') {
+                    showToast('Pendaftaran biometrik dibatalkan', 'error');
+                } else if (err.name === 'InvalidStateError') {
+                    showToast('Perangkat ini sudah terdaftar', 'error');
+                } else {
+                    showToast(err.message || 'Gagal mendaftarkan biometrik', 'error');
+                }
+            } finally {
+                btn.disabled = false;
+                btnText.textContent = originalText;
+            }
+        }
+
+        async function removeBiometric() {
+            if (!confirm('Hapus semua data biometrik? Anda perlu mendaftarkan ulang nanti.')) return;
+            
+            try {
+                const res = await fetch('api_biometric.php?action=delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('Biometrik berhasil dihapus', 'success');
+                    await refreshBiometricStatus();
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch(err) {
+                showToast(err.message || 'Gagal menghapus biometrik', 'error');
+            }
+        }
+
+        function getDeviceName() {
+            const ua = navigator.userAgent;
+            if (/iPhone/i.test(ua)) return 'iPhone';
+            if (/iPad/i.test(ua)) return 'iPad';
+            if (/Samsung/i.test(ua)) return 'Samsung';
+            if (/Xiaomi|Redmi|POCO/i.test(ua)) return 'Xiaomi';
+            if (/OPPO/i.test(ua)) return 'OPPO';
+            if (/vivo/i.test(ua)) return 'Vivo';
+            if (/Realme/i.test(ua)) return 'Realme';
+            if (/Android/i.test(ua)) return 'Android';
+            if (/Windows/i.test(ua)) return 'Windows Hello';
+            if (/Mac/i.test(ua)) return 'MacBook Touch ID';
+            return 'Perangkat Biometrik';
+        }
+
+        // Init
+        initBiometricSettings();
     </script>
     
     <?php include 'footer.php'; ?>
