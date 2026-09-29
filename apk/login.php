@@ -196,18 +196,11 @@ if(isset($_POST['login'])) {
                         </div>
                     </div>
                 </div>
-                <!-- Tombol Masuk + Biometrik -->
-                <div class="flex gap-3 mt-6">
-                    <button type="submit" name="login" 
-                        class="flex-1 bg-primary hover:bg-blue-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 active:scale-95 transition-transform">
-                        Masuk
-                    </button>
-                    <button type="button" id="biometricLoginBtn" onclick="loginWithBiometric()" 
-                        class="w-14 bg-gradient-to-br from-emerald-500 to-teal-500 text-white rounded-xl shadow-lg shadow-emerald-500/30 active:scale-90 transition-all flex items-center justify-center"
-                        title="Login Biometrik">
-                        <i class="fa-solid fa-fingerprint text-xl" id="biometricIcon"></i>
-                    </button>
-                </div>
+                <!-- Tombol Masuk -->
+                <button type="submit" name="login" 
+                    class="w-full mt-6 bg-primary hover:bg-blue-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 active:scale-95 transition-transform">
+                    Masuk
+                </button>
             </form>
             
             <button id="installAppBtn" class="mx-auto mt-6 px-6 py-3 bg-white text-slate-700 font-extrabold text-xs rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-slate-200 active:scale-95 transition-transform flex items-center justify-center gap-2">
@@ -259,165 +252,7 @@ if(isset($_POST['login'])) {
             }
         });
 
-        // =========================================
-        // BIOMETRIC LOGIN (WebAuthn)
-        // =========================================
-        
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('biometricToast');
-            const msg = document.getElementById('toastMsg');
-            const icon = document.getElementById('toastIcon');
-            
-            msg.textContent = message;
-            
-            if (type === 'success') {
-                icon.className = 'w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0';
-                icon.innerHTML = '<i class="fa-solid fa-check text-emerald-500 text-sm"></i>';
-            } else if (type === 'error') {
-                icon.className = 'w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0';
-                icon.innerHTML = '<i class="fa-solid fa-xmark text-red-500 text-sm"></i>';
-            } else {
-                icon.className = 'w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0';
-                icon.innerHTML = '<i class="fa-solid fa-fingerprint text-blue-500 text-sm"></i>';
-            }
-            
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3500);
-        }
-        
-        // Cek apakah ada credential terdaftar & tampilkan tombol
-        async function initBiometric() {
-            // Cek apakah ada credential terdaftar di server
-            try {
-                const res = await fetch('api_biometric.php?action=check');
-                const data = await res.json();
-                
-                if (data.success && data.has_credentials) {
-                    // Tampilkan tombol biometrik
-                    document.getElementById('biometricLoginBtn').style.display = 'flex';
-                }
-            } catch(e) {
-                console.log('Biometric check failed:', e);
-            }
-        }
-        
-        // Login dengan biometrik
-        async function loginWithBiometric() {
-            const btn = document.getElementById('biometricLoginBtn');
-            const btnIcon = document.getElementById('biometricIcon');
-            
-            // Cek browser support dulu
-            if (!window.PublicKeyCredential) {
-                showToast('Browser tidak mendukung biometrik', 'error');
-                return;
-            }
-            
-            // Cek dulu apakah ada credential terdaftar
-            try {
-                const checkRes = await fetch('api_biometric.php?action=check');
-                const checkData = await checkRes.json();
-                if (!checkData.success || !checkData.has_credentials) {
-                    showToast('Belum ada biometrik terdaftar. Daftarkan di menu Pengaturan', 'error');
-                    return;
-                }
-            } catch(e) {
-                showToast('Gagal cek biometrik', 'error');
-                return;
-            }
-            
-            // Start scanning animation
-            btn.classList.add('scanning');
-            btn.disabled = true;
-            
-            try {
-                // 1. Ambil options dari server
-                const optRes = await fetch('api_biometric.php?action=login_options');
-                const optData = await optRes.json();
-                
-                if (!optData.success) {
-                    throw new Error(optData.error);
-                }
-                
-                // 2. Konversi challenge & credential IDs
-                const publicKey = optData.publicKey;
-                publicKey.challenge = base64urlToBuffer(publicKey.challenge);
-                
-                if (publicKey.allowCredentials) {
-                    publicKey.allowCredentials = publicKey.allowCredentials.map(cred => ({
-                        ...cred,
-                        id: base64urlToBuffer(cred.id)
-                    }));
-                }
-                
-                // 3. Minta browser untuk verifikasi biometrik
-                const assertion = await navigator.credentials.get({ publicKey });
-                
-                // 4. Kirim hasilnya ke server
-                const verifyRes = await fetch('api_biometric.php?action=login_complete', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        id: assertion.id,
-                        rawId: bufferToBase64url(assertion.rawId),
-                        response: {
-                            authenticatorData: bufferToBase64url(assertion.response.authenticatorData),
-                            clientDataJSON: bufferToBase64url(assertion.response.clientDataJSON),
-                            signature: bufferToBase64url(assertion.response.signature)
-                        },
-                        type: assertion.type
-                    })
-                });
-                
-                const verifyData = await verifyRes.json();
-                
-                if (verifyData.success) {
-                    btn.classList.remove('scanning');
-                    btnIcon.className = 'fa-solid fa-check text-xl';
-                    
-                    showToast('Login biometrik berhasil! Selamat datang, ' + verifyData.user, 'success');
-                    
-                    setTimeout(() => {
-                        window.location.href = 'index.php';
-                    }, 1200);
-                } else {
-                    throw new Error(verifyData.error);
-                }
-                
-            } catch(err) {
-                btn.classList.remove('scanning');
-                btn.disabled = false;
-                btnIcon.className = 'fa-solid fa-fingerprint text-xl';
-                
-                if (err.name === 'NotAllowedError') {
-                    showToast('Verifikasi biometrik dibatalkan', 'error');
-                } else {
-                    showToast(err.message || 'Gagal verifikasi biometrik', 'error');
-                }
-            }
-        }
-        
-        // Utility: base64url <-> ArrayBuffer
-        function base64urlToBuffer(base64url) {
-            const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
-            const padLen = (4 - base64.length % 4) % 4;
-            const padded = base64 + '='.repeat(padLen);
-            const binary = atob(padded);
-            const buffer = new Uint8Array(binary.length);
-            for (let i = 0; i < binary.length; i++) {
-                buffer[i] = binary.charCodeAt(i);
-            }
-            return buffer.buffer;
-        }
-        
-        function bufferToBase64url(buffer) {
-            const bytes = new Uint8Array(buffer);
-            let binary = '';
-            bytes.forEach(b => binary += String.fromCharCode(b));
-            return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-        }
-        
-        // Init on page load
-        initBiometric();
+
     </script>
 </body>
 </html>
