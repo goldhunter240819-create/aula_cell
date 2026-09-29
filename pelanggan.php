@@ -21,7 +21,6 @@ if(isset($_POST['tambah'])) {
         }
     }
 }
-}
 
 // Jika edit pelanggan
 if(isset($_POST['edit'])) {
