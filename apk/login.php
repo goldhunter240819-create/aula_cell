@@ -201,24 +201,24 @@ if(isset($_POST['login'])) {
                     class="w-full mt-6 bg-primary hover:bg-blue-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 active:scale-95 transition-transform">
                     Masuk
                 </button>
-
-                <!-- Divider -->
-                <div id="biometricDivider" class="hidden mt-6 mb-4 flex items-center gap-3">
-                    <div class="divider-line"></div>
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">atau</span>
-                    <div class="divider-line"></div>
-                </div>
-
-                <!-- Biometric Login Button -->
-                <button type="button" id="biometricLoginBtn" onclick="loginWithBiometric()" 
-                    class="hidden biometric-btn w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-3">
-                    <div class="scan-line"></div>
-                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                        <i class="fa-solid fa-fingerprint text-lg" id="biometricIcon"></i>
-                    </div>
-                    <span id="biometricBtnText">Masuk dengan Biometrik</span>
-                </button>
             </form>
+
+            <!-- Divider & Biometric Button (diluar form) -->
+            <div id="biometricDivider" class="mt-5 mb-4 flex items-center gap-3 px-6" style="display:none;">
+                <div class="divider-line"></div>
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">atau</span>
+                <div class="divider-line"></div>
+            </div>
+
+            <button type="button" id="biometricLoginBtn" onclick="loginWithBiometric()" 
+                class="biometric-btn w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-3"
+                style="display:none;">
+                <div class="scan-line"></div>
+                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                    <i class="fa-solid fa-fingerprint text-lg" id="biometricIcon"></i>
+                </div>
+                <span id="biometricBtnText">Masuk dengan Biometrik</span>
+            </button>
             
             <button id="installAppBtn" class="mx-auto mt-6 px-6 py-3 bg-white text-slate-700 font-extrabold text-xs rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-slate-200 active:scale-95 transition-transform flex items-center justify-center gap-2">
                 <i class="fa-solid fa-download text-primary"></i> Install ke Layar Utama
@@ -295,18 +295,8 @@ if(isset($_POST['login'])) {
             setTimeout(() => toast.classList.remove('show'), 3500);
         }
         
-        // Cek apakah browser support WebAuthn & ada credential terdaftar
+        // Cek apakah ada credential terdaftar & tampilkan tombol
         async function initBiometric() {
-            // Cek browser support
-            if (!window.PublicKeyCredential) return;
-            
-            try {
-                const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-                if (!available) return;
-            } catch(e) {
-                return;
-            }
-            
             // Cek apakah ada credential terdaftar di server
             try {
                 const res = await fetch('api_biometric.php?action=check');
@@ -314,10 +304,8 @@ if(isset($_POST['login'])) {
                 
                 if (data.success && data.has_credentials) {
                     // Tampilkan tombol biometrik
-                    document.getElementById('biometricDivider').classList.remove('hidden');
-                    document.getElementById('biometricDivider').classList.add('flex');
-                    document.getElementById('biometricLoginBtn').classList.remove('hidden');
-                    document.getElementById('biometricLoginBtn').classList.add('flex');
+                    document.getElementById('biometricDivider').style.display = 'flex';
+                    document.getElementById('biometricLoginBtn').style.display = 'flex';
                 }
             } catch(e) {
                 console.log('Biometric check failed:', e);
@@ -329,6 +317,12 @@ if(isset($_POST['login'])) {
             const btn = document.getElementById('biometricLoginBtn');
             const btnText = document.getElementById('biometricBtnText');
             const btnIcon = document.getElementById('biometricIcon');
+            
+            // Cek browser support dulu
+            if (!window.PublicKeyCredential) {
+                showToast('Browser tidak mendukung biometrik', 'error');
+                return;
+            }
             
             // Start scanning animation
             btn.classList.add('scanning');
@@ -379,7 +373,6 @@ if(isset($_POST['login'])) {
                 if (verifyData.success) {
                     // Success animation
                     btn.classList.remove('scanning');
-                    btn.className = btn.className.replace('from-emerald-500 to-teal-500', 'from-emerald-400 to-emerald-500');
                     btnIcon.className = 'fa-solid fa-check text-lg';
                     btnText.textContent = 'Berhasil! Mengalihkan...';
                     
