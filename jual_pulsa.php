@@ -414,9 +414,10 @@ if(isset($_POST['submit'])) {
         });
     }
     function pilihPelanggan(hp, nama) {
-        document.getElementById('no_tujuan').value = hp;
+        let textVal = nama + ' - ' + hp;
+        document.getElementById('no_tujuan').value = textVal;
         closePelangganModal();
-        checkPelanggan(hp);
+        checkPelanggan(textVal);
     }
     function clearNoTujuan() {
         document.getElementById('no_tujuan').value = '';
@@ -427,6 +428,13 @@ if(isset($_POST['submit'])) {
         const box = document.getElementById('simpanPelangganBox');
         const clearBtn = document.getElementById('clearBtn');
         clearBtn.classList.toggle('hidden', val.length === 0);
+
+        if (val.includes(' - ')) {
+            box.classList.add('hidden');
+            document.getElementById('chkSimpanPelanggan').checked = false;
+            toggleNamaPelanggan();
+            return;
+        }
 
         if(val.length >= 10 && !dbPelanggan.includes(val)) {
             box.classList.remove('hidden');
