@@ -21,6 +21,26 @@ if(isset($_POST['tambah'])) {
         }
     }
 }
+}
+
+// Jika edit pelanggan
+if(isset($_POST['edit'])) {
+    $id = (int)$_POST['id_pelanggan'];
+    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+    $no_hp = mysqli_real_escape_string($conn, $_POST['no_hp']);
+    
+    // Cek nomor sudah ada belum (kecuali nomor dia sendiri)
+    $cek = mysqli_query($conn, "SELECT id FROM pelanggan WHERE no_hp = '$no_hp' AND id != $id");
+    if(mysqli_num_rows($cek) > 0) {
+        $error_msg = "Nomor HP sudah terdaftar pada kontak lain!";
+    } else {
+        if(mysqli_query($conn, "UPDATE pelanggan SET nama = '$nama', no_hp = '$no_hp' WHERE id = $id")) {
+            $sukses_msg = "Pelanggan berhasil diedit!";
+        } else {
+            $error_msg = "Gagal mengedit pelanggan.";
+        }
+    }
+}
 
 // Jika hapus pelanggan
 if(isset($_POST['hapus'])) {
@@ -206,12 +226,17 @@ $total_pelanggan = $q_pel ? mysqli_num_rows($q_pel) : 0;
                                     <div class="text-sm font-bold text-slate-600 pel-hp"><?= $row['no_hp'] ?></div>
                                 </td>
                                 <td class="py-4 px-4 text-right">
-                                    <form method="POST" action="" onsubmit="return confirm('Yakin ingin menghapus pelanggan <?= addslashes($row['nama']) ?>?');">
-                                        <input type="hidden" name="id_pelanggan" value="<?= $row['id'] ?>">
-                                        <button type="submit" name="hapus" class="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white w-8 h-8 rounded-lg font-bold text-xs transition-colors border border-red-200 hover:border-red-500 flex items-center justify-center ml-auto">
-                                            <i class="fa-solid fa-trash"></i>
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button type="button" onclick="openEditModal(<?= $row['id'] ?>, '<?= htmlspecialchars(addslashes($row['nama'])) ?>', '<?= htmlspecialchars(addslashes($row['no_hp'])) ?>')" class="bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white w-8 h-8 rounded-lg font-bold text-xs transition-colors border border-blue-200 hover:border-blue-500 flex items-center justify-center">
+                                            <i class="fa-solid fa-pen"></i>
                                         </button>
-                                    </form>
+                                        <form method="POST" action="" onsubmit="return confirm('Yakin ingin menghapus pelanggan <?= addslashes($row['nama']) ?>?');">
+                                            <input type="hidden" name="id_pelanggan" value="<?= $row['id'] ?>">
+                                            <button type="submit" name="hapus" class="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white w-8 h-8 rounded-lg font-bold text-xs transition-colors border border-red-200 hover:border-red-500 flex items-center justify-center">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             <?php endwhile; ?>
@@ -266,6 +291,40 @@ $total_pelanggan = $q_pel ? mysqli_num_rows($q_pel) : 0;
         </div>
     </div>
 
+    <!-- Modal Edit Desktop -->
+    <div id="editModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="document.getElementById('editModal').classList.add('hidden')"></div>
+        <div class="bg-white w-full max-w-md rounded-2xl p-6 relative transform transition-transform shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black text-slate-800">Edit Pelanggan</h3>
+                <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <form method="POST" action="">
+                <input type="hidden" name="id_pelanggan" id="edit_id_desk">
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nama Pelanggan</label>
+                    <input type="text" name="nama" id="edit_nama_desk" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nomor HP</label>
+                    <input type="text" name="no_hp" id="edit_no_hp_desk" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                </div>
+                
+                <div class="flex gap-3">
+                    <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" name="edit" class="flex-1 bg-primary hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md shadow-primary/30 transition-all">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         function searchTable() {
             let input = document.getElementById("searchDesk");
@@ -281,6 +340,12 @@ $total_pelanggan = $q_pel ? mysqli_num_rows($q_pel) : 0;
                     tr.style.display = "none";
                 }
             });
+        }
+        function openEditModal(id, nama, telp) {
+            document.getElementById('edit_id_desk').value = id;
+            document.getElementById('edit_nama_desk').value = nama;
+            document.getElementById('edit_no_hp_desk').value = telp;
+            document.getElementById('editModal').classList.remove('hidden');
         }
     </script>
 </body>

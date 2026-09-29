@@ -21,6 +21,26 @@ if(isset($_POST['tambah'])) {
         }
     }
 }
+}
+
+// Jika edit pelanggan
+if(isset($_POST['edit'])) {
+    $id = (int)$_POST['id_pelanggan'];
+    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+    $no_hp = mysqli_real_escape_string($conn, $_POST['no_hp']);
+    
+    // Cek nomor sudah ada belum (kecuali nomor dia sendiri)
+    $cek = mysqli_query($conn, "SELECT id FROM pelanggan WHERE no_hp = '$no_hp' AND id != $id");
+    if(mysqli_num_rows($cek) > 0) {
+        $error_msg = "Nomor HP sudah terdaftar pada kontak lain!";
+    } else {
+        if(mysqli_query($conn, "UPDATE pelanggan SET nama = '$nama', no_hp = '$no_hp' WHERE id = $id")) {
+            $sukses_msg = "Pelanggan berhasil diedit!";
+        } else {
+            $error_msg = "Gagal mengedit pelanggan.";
+        }
+    }
+}
 
 // Jika hapus pelanggan
 if(isset($_POST['hapus'])) {
@@ -113,12 +133,17 @@ $total_pelanggan = $q_pel ? mysqli_num_rows($q_pel) : 0;
                                         <p class="text-xs font-semibold text-slate-500"><?= $p['no_hp'] ?></p>
                                     </div>
                                 </div>
-                                <form method="POST" action="" onsubmit="return confirm('Hapus pelanggan <?= addslashes($p['nama']) ?>?');">
-                                    <input type="hidden" name="id_pelanggan" value="<?= $p['id'] ?>">
-                                    <button type="submit" name="hapus" class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center active:scale-95 transition-transform">
-                                        <i class="fa-solid fa-trash text-xs"></i>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" onclick="openEditModal(<?= $p['id'] ?>, '<?= htmlspecialchars(addslashes($p['nama'])) ?>', '<?= htmlspecialchars(addslashes($p['no_hp'])) ?>')" class="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center active:scale-95 transition-transform">
+                                        <i class="fa-solid fa-pen text-xs"></i>
                                     </button>
-                                </form>
+                                    <form method="POST" action="" onsubmit="return confirm('Hapus pelanggan <?= addslashes($p['nama']) ?>?');">
+                                        <input type="hidden" name="id_pelanggan" value="<?= $p['id'] ?>">
+                                        <button type="submit" name="hapus" class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center active:scale-95 transition-transform">
+                                            <i class="fa-solid fa-trash text-xs"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         <?php endwhile; ?>
                     <?php else: ?>
@@ -163,6 +188,33 @@ $total_pelanggan = $q_pel ? mysqli_num_rows($q_pel) : 0;
         </div>
     </div>
 
+    <!-- Modal Edit -->
+    <div id="editModal" class="hidden fixed inset-0 z-[100] flex items-end justify-center sm:items-center">
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="document.getElementById('editModal').classList.add('hidden')"></div>
+        <div class="bg-white w-full md:w-[400px] rounded-t-[2rem] md:rounded-[2rem] p-6 relative transform transition-transform shadow-2xl pb-safe">
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
+            <h3 class="text-xl font-black text-slate-800 text-center mb-6">Edit Pelanggan</h3>
+            
+            <form method="POST" action="">
+                <input type="hidden" name="id_pelanggan" id="edit_id">
+                <div class="mb-4">
+                    <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Nama Pelanggan</label>
+                    <input type="text" name="nama" id="edit_nama" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Nomor HP</label>
+                    <input type="text" name="no_hp" id="edit_no_hp" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                </div>
+                <button type="submit" name="edit" class="w-full bg-primary text-white font-black py-3.5 rounded-xl shadow-[0_8px_20px_rgba(37,99,235,0.3)] active:scale-95 transition-transform mb-3">
+                    Simpan Perubahan
+                </button>
+                <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')" class="w-full bg-slate-100 text-slate-500 font-bold py-3.5 rounded-xl active:scale-95 transition-transform">
+                    Batal
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script>
         function filterPelanggan() {
             const term = document.getElementById('searchPelanggan').value.toLowerCase();
@@ -175,6 +227,12 @@ $total_pelanggan = $q_pel ? mysqli_num_rows($q_pel) : 0;
                     el.style.display = 'none';
                 }
             });
+        }
+        function openEditModal(id, nama, telp) {
+            document.getElementById('edit_id').value = id;
+            document.getElementById('edit_nama').value = nama;
+            document.getElementById('edit_no_hp').value = telp;
+            document.getElementById('editModal').classList.remove('hidden');
         }
     </script>
 </body>
