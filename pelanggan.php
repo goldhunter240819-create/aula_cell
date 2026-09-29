@@ -4,54 +4,44 @@ require 'koneksi.php';
 $sukses_msg = "";
 $error_msg = "";
 
-// Jika tombol Lunasi ditekan
-if(isset($_POST['lunasi'])) {
-    $id_transaksi = (int)$_POST['id_transaksi'];
+// Jika tambah pelanggan
+if(isset($_POST['tambah'])) {
+    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+    $no_hp = mysqli_real_escape_string($conn, $_POST['no_hp']);
     
-    mysqli_begin_transaction($conn);
-    try {
-        $q_trx = mysqli_query($conn, "SELECT * FROM transaksi_penjualan WHERE id = $id_transaksi AND status_pembayaran = 'Hutang'");
-        if(mysqli_num_rows($q_trx) == 0) {
-            throw new Exception("Data hutang tidak ditemukan atau sudah lunas.");
+    // Cek nomor sudah ada belum
+    $cek = mysqli_query($conn, "SELECT id FROM pelanggan WHERE no_hp = '$no_hp'");
+    if(mysqli_num_rows($cek) > 0) {
+        $error_msg = "Nomor HP sudah terdaftar!";
+    } else {
+        if(mysqli_query($conn, "INSERT INTO pelanggan (nama, no_hp) VALUES ('$nama', '$no_hp')")) {
+            $sukses_msg = "Pelanggan berhasil ditambahkan!";
+        } else {
+            $error_msg = "Gagal menambahkan pelanggan.";
         }
-        $trx = mysqli_fetch_assoc($q_trx);
-        
-        $harga_jual = $trx['harga_jual'];
-        $id_dompet_pemasukan = $trx['id_dompet_pemasukan'];
-        
-        // 1. Update status jadi Lunas
-        mysqli_query($conn, "UPDATE transaksi_penjualan SET status_pembayaran = 'Lunas' WHERE id = $id_transaksi");
-        
-        // 2. Tambahkan uang ke dompet pemasukan
-        mysqli_query($conn, "UPDATE dompet SET saldo = saldo + $harga_jual WHERE id = $id_dompet_pemasukan");
-        
-        mysqli_commit($conn);
-        $sukses_msg = "Mantap! Hutang '{$trx['produk']}' sebesar Rp " . number_format($harga_jual,0,',','.') . " berhasil dilunasi. Uang sudah masuk ke kas!";
-    } catch (Exception $e) {
-        mysqli_rollback($conn);
-        $error_msg = $e->getMessage();
     }
 }
 
-// Ambil data semua hutang yang belum lunas
-$q_hutang = mysqli_query($conn, "
-    SELECT t.*, d.nama_dompet 
-    FROM transaksi_penjualan t
-    JOIN dompet d ON t.id_dompet_pemasukan = d.id
-    WHERE t.status_pembayaran = 'Hutang'
-    ORDER BY t.tanggal DESC
-");
+// Jika hapus pelanggan
+if(isset($_POST['hapus'])) {
+    $id = (int)$_POST['id_pelanggan'];
+    if(mysqli_query($conn, "DELETE FROM pelanggan WHERE id = $id")) {
+        $sukses_msg = "Pelanggan berhasil dihapus!";
+    } else {
+        $error_msg = "Gagal menghapus pelanggan.";
+    }
+}
 
-// Hitung total piutang (uang di luar)
-$q_total = mysqli_query($conn, "SELECT SUM(harga_jual) as total FROM transaksi_penjualan WHERE status_pembayaran = 'Hutang'");
-$total_piutang = mysqli_fetch_assoc($q_total)['total'] ?? 0;
+// Ambil data pelanggan
+$q_pel = mysqli_query($conn, "SELECT * FROM pelanggan ORDER BY nama ASC");
+$total_pelanggan = $q_pel ? mysqli_num_rows($q_pel) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buku Hutang - Aula Cell</title>
+    <title>Buku Pelanggan - Aula Cell</title>
     <link rel="icon" href="aulalogo.png" type="image/jpeg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -152,17 +142,17 @@ $total_piutang = mysqli_fetch_assoc($q_total)['total'] ?? 0;
     <!-- Main Content -->
     <main class="flex-1 w-full max-w-full pb-10">
         
-        <header class="bg-gradient-to-r from-red-600 to-rose-500 rounded-3xl p-8 mb-10 shadow-lg shadow-red-500/30 flex justify-between items-center text-white relative overflow-hidden">
+        <header class="bg-gradient-to-r from-blue-700 to-blue-500 rounded-3xl p-8 mb-10 shadow-lg shadow-blue-500/30 flex justify-between items-center text-white relative overflow-hidden">
             <div class="absolute -right-10 -bottom-10 opacity-10">
-                <i class="fa-solid fa-book text-9xl"></i>
+                <i class="fa-solid fa-address-book text-9xl"></i>
             </div>
             <div class="relative z-10">
-                <h2 class="text-3xl font-bold mb-2">Buku Hutang</h2>
-                <p class="text-rose-100 text-sm">Daftar pelanggan yang masih belum bayar Lunas.</p>
+                <h2 class="text-3xl font-bold mb-2">Buku Pelanggan</h2>
+                <p class="text-blue-100 text-sm">Kelola daftar kontak dan pelanggan setia konter Anda.</p>
             </div>
             <div class="relative z-10 text-right bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/20">
-                <p class="text-xs text-rose-100 font-bold uppercase tracking-widest mb-1">Total Uang Nyangkut</p>
-                <h3 class="text-3xl font-black tracking-tight">Rp <?= number_format($total_piutang,0,',','.') ?></h3>
+                <p class="text-xs text-blue-100 font-bold uppercase tracking-widest mb-1">Total Kontak</p>
+                <h3 class="text-3xl font-black tracking-tight"><?= $total_pelanggan ?> <span class="text-sm">Orang</span></h3>
             </div>
         </header>
 
@@ -182,59 +172,57 @@ $total_piutang = mysqli_fetch_assoc($q_total)['total'] ?? 0;
 
         <div class="glass-card rounded-2xl p-6 lg:p-8">
             <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
-                <h3 class="font-bold text-lg text-slate-800">Daftar Tagihan Berjalan</h3>
-                <span class="bg-red-50 text-red-500 px-3 py-1 rounded-full text-xs font-bold"><?= mysqli_num_rows($q_hutang) ?> Tagihan</span>
+                <h3 class="font-bold text-lg text-slate-800">Daftar Pelanggan</h3>
+                <button onclick="document.getElementById('tambahModal').classList.remove('hidden')" class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md shadow-primary/30 transition-all active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Tambah Baru
+                </button>
+            </div>
+
+            <!-- Search -->
+            <div class="relative mb-6">
+                <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="searchDesk" onkeyup="searchTable()" placeholder="Cari nama atau nomor HP pelanggan..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+                <table class="w-full text-left border-collapse" id="tabelPelanggan">
                     <thead>
                         <tr class="bg-slate-50">
-                            <th class="py-4 px-4 font-bold text-slate-500 text-sm rounded-l-xl">Tanggal</th>
-                            <th class="py-4 px-4 font-bold text-slate-500 text-sm">Nama Transaksi</th>
-                            <th class="py-4 px-4 font-bold text-slate-500 text-sm">Penerima Kas</th>
-                            <th class="py-4 px-4 font-bold text-slate-500 text-sm">Nominal Tagihan</th>
+                            <th class="py-4 px-4 font-bold text-slate-500 text-sm rounded-l-xl w-16">No</th>
+                            <th class="py-4 px-4 font-bold text-slate-500 text-sm">Nama Pelanggan</th>
+                            <th class="py-4 px-4 font-bold text-slate-500 text-sm">Nomor HP</th>
                             <th class="py-4 px-4 font-bold text-slate-500 text-sm rounded-r-xl text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if(mysqli_num_rows($q_hutang) > 0): ?>
-                            <?php while($row = mysqli_fetch_assoc($q_hutang)): ?>
-                            <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors group">
+                        <?php if(mysqli_num_rows($q_pel) > 0): ?>
+                            <?php $no=1; while($row = mysqli_fetch_assoc($q_pel)): ?>
+                            <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors group pel-row">
+                                <td class="py-4 px-4 text-sm font-bold text-slate-400"><?= $no++ ?></td>
                                 <td class="py-4 px-4">
-                                    <div class="text-sm font-bold text-slate-800"><?= date('d M Y', strtotime($row['tanggal'])) ?></div>
-                                    <div class="text-xs text-slate-400"><?= date('H:i', strtotime($row['tanggal'])) ?></div>
+                                    <div class="text-sm font-bold text-slate-800 pel-nama"><?= $row['nama'] ?></div>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <div class="text-sm font-bold text-slate-800"><?= $row['produk'] ?></div>
-                                    <?php if($row['keterangan']): ?>
-                                        <div class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-note-sticky text-slate-400 mr-1"></i> <?= $row['keterangan'] ?></div>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="py-4 px-4 text-sm font-bold text-primary">
-                                    <?= $row['nama_dompet'] ?>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <div class="text-base font-black text-slate-800">Rp <?= number_format($row['harga_jual'],0,',','.') ?></div>
+                                    <div class="text-sm font-bold text-slate-600 pel-hp"><?= $row['no_hp'] ?></div>
                                 </td>
                                 <td class="py-4 px-4 text-right">
-                                    <form method="POST" action="" onsubmit="return confirm('Yakin tagihan ini sudah dibayar lunas?');">
-                                        <input type="hidden" name="id_transaksi" value="<?= $row['id'] ?>">
-                                        <button type="submit" name="lunasi" class="bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white px-4 py-2 rounded-lg font-bold text-xs transition-colors border border-emerald-200 hover:border-emerald-500">
-                                            <i class="fa-solid fa-hand-holding-dollar mr-1"></i> Tandai Lunas
+                                    <form method="POST" action="" onsubmit="return confirm('Yakin ingin menghapus pelanggan <?= addslashes($row['nama']) ?>?');">
+                                        <input type="hidden" name="id_pelanggan" value="<?= $row['id'] ?>">
+                                        <button type="submit" name="hapus" class="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white w-8 h-8 rounded-lg font-bold text-xs transition-colors border border-red-200 hover:border-red-500 flex items-center justify-center ml-auto">
+                                            <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </form>
                                 </td>
                             </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
-                            <tr>
-                                <td colspan="5" class="py-12 text-center">
-                                    <div class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                                        <i class="fa-solid fa-face-smile"></i>
+                            <tr id="emptyRow">
+                                <td colspan="4" class="py-12 text-center">
+                                    <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                                        <i class="fa-solid fa-address-book"></i>
                                     </div>
-                                    <h4 class="font-bold text-slate-800 mb-1">Wah, Bebas Hutang!</h4>
-                                    <p class="text-sm text-slate-500">Tidak ada pelanggan yang ngutang saat ini.</p>
+                                    <h4 class="font-bold text-slate-800 mb-1">Belum Ada Pelanggan</h4>
+                                    <p class="text-sm text-slate-500">Klik tombol Tambah Baru untuk menyimpan kontak.</p>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -244,5 +232,56 @@ $total_piutang = mysqli_fetch_assoc($q_total)['total'] ?? 0;
 
         </div>
     </main>
+    
+    <!-- Modal Tambah Desktop -->
+    <div id="tambahModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="document.getElementById('tambahModal').classList.add('hidden')"></div>
+        <div class="bg-white w-full max-w-md rounded-2xl p-6 relative transform transition-transform shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black text-slate-800">Tambah Pelanggan Baru</h3>
+                <button type="button" onclick="document.getElementById('tambahModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <form method="POST" action="">
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nama Pelanggan</label>
+                    <input type="text" name="nama" required placeholder="Contoh: Budi Konter" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nomor Handphone</label>
+                    <input type="text" name="no_hp" required placeholder="Contoh: 081234567890" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                </div>
+                
+                <div class="flex gap-3">
+                    <button type="button" onclick="document.getElementById('tambahModal').classList.add('hidden')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" name="tambah" class="flex-1 bg-primary hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md shadow-primary/30 transition-all">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function searchTable() {
+            let input = document.getElementById("searchDesk");
+            let filter = input.value.toLowerCase();
+            let trs = document.querySelectorAll(".pel-row");
+            
+            trs.forEach(tr => {
+                let nama = tr.querySelector(".pel-nama").innerText.toLowerCase();
+                let hp = tr.querySelector(".pel-hp").innerText.toLowerCase();
+                if (nama.indexOf(filter) > -1 || hp.indexOf(filter) > -1) {
+                    tr.style.display = "";
+                } else {
+                    tr.style.display = "none";
+                }
+            });
+        }
+    </script>
 </body>
 </html>

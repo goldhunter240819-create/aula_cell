@@ -101,7 +101,7 @@ if(isset($_POST['submit'])) {
             </a>
             
             <!-- Bisnis Dropdown -->
-            <details class="group" <?= in_array($current_page, ['jual_pulsa.php', 'laporan_bisnis.php', 'transaksi_bisnis_umum.php', 'buku_hutang.php', 'kategori.php']) ? 'open' : '' ?>>
+            <details class="group" <?= in_array($current_page, ['jual_pulsa.php', 'laporan_bisnis.php', 'transaksi_bisnis_umum.php', 'buku_hutang.php', 'kategori.php', 'pelanggan.php']) ? 'open' : '' ?>>
                 <summary class="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-blue-200 hover:bg-white/10 hover:text-white transition-colors cursor-pointer select-none">
                     <div class="flex items-center gap-3">
                         <i class="fa-solid fa-store w-4 text-center"></i> Bisnis
@@ -123,6 +123,9 @@ if(isset($_POST['submit'])) {
                     </a>
                     <a href="buku_hutang.php" class="text-sm py-2 px-3 rounded-lg transition-colors <?= ($current_page == 'buku_hutang.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
                         <i class="fa-solid fa-book w-4 mr-1 text-center"></i> Buku Hutang
+                    </a>
+                    <a href="pelanggan.php" class="text-sm py-2 px-3 rounded-lg transition-colors <?= ($current_page == 'pelanggan.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
+                        <i class="fa-solid fa-address-book w-4 mr-1 text-center"></i> Buku Pelanggan
                     </a>
                 </div>
             </details>

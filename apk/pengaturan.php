@@ -128,6 +128,19 @@ if(isset($_POST["ubah_password"])){
         <i class="fa-solid fa-chevron-right text-slate-300"></i>
     </a>
     
+    <a href="pelanggan.php" class="w-full bg-white border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 rounded-[1.25rem] flex items-center justify-between mb-3 active:scale-95 transition-transform">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-address-book"></i>
+            </div>
+            <div class="text-left">
+                <h4 class="font-bold text-sm text-slate-800">Buku Pelanggan</h4>
+                <p class="text-[10px] text-slate-500 font-semibold">Kelola daftar kontak & nomor HP</p>
+            </div>
+        </div>
+        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+    </a>
+    
     <button onclick="togglePasswordForm()" class="w-full bg-white border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 rounded-[1.25rem] flex items-center justify-between mb-4 active:scale-95 transition-transform">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center">
