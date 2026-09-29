@@ -67,6 +67,41 @@ if(mysqli_num_rows($cek_kolom) == 0) {
     echo "<p>✅ Kolom <b>status_pembayaran</b> sudah ada di transaksi_penjualan.</p>";
 }
 
+// 5. Tambah kolom id_kategori jika tabel sudah ada sebelumnya tanpa kolom ini
+$cek_kolom_kat = mysqli_query($conn, "SHOW COLUMNS FROM transaksi_penjualan LIKE 'id_kategori'");
+if(mysqli_num_rows($cek_kolom_kat) == 0) {
+    if(mysqli_query($conn, "ALTER TABLE transaksi_penjualan ADD COLUMN id_kategori INT NULL AFTER id")) {
+        echo "<p>✅ Kolom <b>id_kategori</b> berhasil ditambahkan ke transaksi_penjualan.</p>";
+    } else {
+        echo "<p>❌ Gagal menambahkan kolom id_kategori: " . mysqli_error($conn) . "</p>";
+    }
+} else {
+    echo "<p>✅ Kolom <b>id_kategori</b> sudah ada di transaksi_penjualan.</p>";
+}
+
+// 6. Tambah kolom foto_profil di tabel users jika belum ada
+$cek_foto = mysqli_query($conn, "SHOW COLUMNS FROM users LIKE 'foto_profil'");
+if(mysqli_num_rows($cek_foto) == 0) {
+    if(mysqli_query($conn, "ALTER TABLE users ADD COLUMN foto_profil VARCHAR(255) DEFAULT NULL")) {
+        echo "<p>✅ Kolom <b>foto_profil</b> berhasil ditambahkan ke users.</p>";
+    } else {
+        echo "<p>❌ Gagal menambahkan kolom foto_profil: " . mysqli_error($conn) . "</p>";
+    }
+} else {
+    echo "<p>✅ Kolom <b>foto_profil</b> sudah ada di users.</p>";
+}
+
+// 7. Buat folder uploads jika belum ada
+if(!is_dir("uploads")) {
+    if(mkdir("uploads", 0755, true)) {
+        echo "<p>✅ Folder <b>uploads</b> berhasil dibuat.</p>";
+    } else {
+        echo "<p>❌ Gagal membuat folder uploads.</p>";
+    }
+} else {
+    echo "<p>✅ Folder <b>uploads</b> sudah ada.</p>";
+}
+
 echo "<h3>🎉 Update Database Selesai! Silakan hapus file ini jika sudah tidak digunakan.</h3>";
 echo "<a href='index.php'>Kembali ke Dashboard</a>";
 ?>

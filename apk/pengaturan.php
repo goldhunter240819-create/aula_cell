@@ -32,10 +32,16 @@ if(isset($_POST["upload_foto"]) && isset($_FILES["foto"])) {
 
 // 3. Handle Ubah Password
 if(isset($_POST["ubah_password"])){
+    $old_pass = $_POST["old_password"];
     $pass1 = $_POST["new_password"];
     $pass2 = $_POST["confirm_password"];
     
-    if($pass1 === $pass2){
+    // Verifikasi password lama dulu
+    if(!password_verify($old_pass, $user_data['password'])) {
+        $error_msg = "Password lama salah!";
+    } else if($pass1 !== $pass2){
+        $error_msg = "Konfirmasi password tidak cocok!";
+    } else {
         $hashed = password_hash($pass1, PASSWORD_DEFAULT);
         $update = mysqli_query($conn, "UPDATE users SET password = '$hashed' WHERE id = " . $user_data['id']);
         if($update){
@@ -43,8 +49,6 @@ if(isset($_POST["ubah_password"])){
         } else {
             $error_msg = "Gagal mengubah password!";
         }
-    } else {
-        $error_msg = "Konfirmasi password tidak cocok!";
     }
 }
 ?><!DOCTYPE html>

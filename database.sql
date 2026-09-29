@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     nama_lengkap VARCHAR(100) NOT NULL,
+    foto_profil VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -64,6 +65,7 @@ CREATE TABLE IF NOT EXISTS transaksi_umum (
 -- Tabel Transaksi Penjualan Pulsa / E-Wallet (Khusus Bisnis)
 CREATE TABLE IF NOT EXISTS transaksi_penjualan (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    id_kategori INT,
     tanggal DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     produk VARCHAR(100) NOT NULL,
     no_tujuan VARCHAR(20) NOT NULL,
