@@ -7,9 +7,20 @@ $bulan_ini = date("Y-m");
 $q_saldo_pribadi = mysqli_query($conn, "SELECT SUM(saldo) as total FROM dompet WHERE tipe = 'Pribadi'");
 $saldo_pribadi = mysqli_fetch_assoc($q_saldo_pribadi)["total"] ?? 0;
 
-// Saldo Bisnis
+// Saldo Bisnis (Total)
 $q_saldo_bisnis = mysqli_query($conn, "SELECT SUM(saldo) as total FROM dompet WHERE tipe = 'Bisnis'");
 $saldo_bisnis = mysqli_fetch_assoc($q_saldo_bisnis)["total"] ?? 0;
+
+// Detail Dompet Bisnis
+$q_detail_bisnis = mysqli_query($conn, "SELECT nama_dompet, saldo FROM dompet WHERE tipe = 'Bisnis' ORDER BY id ASC");
+$detail_bisnis = [];
+while($row = mysqli_fetch_assoc($q_detail_bisnis)) {
+    $detail_bisnis[] = $row;
+}
+
+// Total Hutang (Uang di luar)
+$q_hutang = mysqli_query($conn, "SELECT SUM(harga_jual) as total FROM transaksi_penjualan WHERE status_pembayaran = 'Hutang'");
+$total_hutang = ($q_hutang) ? (mysqli_fetch_assoc($q_hutang)['total'] ?? 0) : 0;
 
 // Data User (Foto Profil)
 $user_id = $_SESSION['user_id'];
@@ -106,14 +117,39 @@ $foto_url = empty($foto) ? "../aulalogo.png" : "../uploads/" . $foto;
                 <!-- Enhanced Minimalist Vertical Cards -->
                 <div class="grid grid-cols-1 gap-4 mb-8">
                     <!-- Card Bisnis -->
-                    <div class="bg-white rounded-[1.25rem] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-slate-200 flex justify-between items-center relative overflow-hidden">
+                    <div class="bg-white rounded-[1.25rem] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-slate-200 relative overflow-hidden">
                         <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary"></div>
-                        <div class="pl-2 relative z-10">
-                            <p class="text-slate-500 text-[11px] font-extrabold uppercase tracking-widest mb-1">Modal Bisnis</p>
-                            <h3 class="text-2xl font-black text-slate-800 tracking-tight">Rp <?= number_format($saldo_bisnis, 0, ',', '.') ?></h3>
+                        
+                        <!-- Header Card Bisnis -->
+                        <div class="flex justify-between items-center mb-4 pl-2">
+                            <div>
+                                <p class="text-slate-500 text-[11px] font-extrabold uppercase tracking-widest mb-1">Total Modal Bisnis</p>
+                                <h3 class="text-2xl font-black text-slate-800 tracking-tight">Rp <?= number_format($saldo_bisnis, 0, ',', '.') ?></h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                                <i class="fa-solid fa-store text-primary text-xl"></i>
+                            </div>
                         </div>
-                        <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center relative z-10">
-                            <i class="fa-solid fa-store text-primary text-xl"></i>
+
+                        <!-- Breakdown Saldo & Hutang -->
+                        <div class="pl-2 pt-4 border-t border-slate-100 flex flex-col gap-2.5">
+                            <?php foreach($detail_bisnis as $db): ?>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                                    <span class="text-xs font-bold text-slate-600"><?= $db['nama_dompet'] ?></span>
+                                </div>
+                                <span class="text-xs font-black text-slate-800">Rp <?= number_format($db['saldo'], 0, ',', '.') ?></span>
+                            </div>
+                            <?php endforeach; ?>
+                            
+                            <div class="flex justify-between items-center mt-1 pt-2.5 border-t border-slate-50 border-dashed">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-rose-500"></div>
+                                    <span class="text-xs font-bold text-rose-600">Uang di Luar (Piutang)</span>
+                                </div>
+                                <span class="text-xs font-black text-rose-600">Rp <?= number_format($total_hutang, 0, ',', '.') ?></span>
+                            </div>
                         </div>
                     </div>
                     

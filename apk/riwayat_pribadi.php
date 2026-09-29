@@ -169,7 +169,8 @@ if(isset($_POST['edit_umum'])) {
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nominal (Rp)</label>
-                    <input type="number" name="edit_nominal" id="eu_nominal" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    <input type="hidden" name="edit_nominal" id="eu_nominal_hidden">
+                    <input type="text" inputmode="numeric" id="eu_nominal" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" oninput="formatRp(this, 'eu_nominal_hidden')">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Keterangan</label>
@@ -184,10 +185,19 @@ if(isset($_POST['edit_umum'])) {
     </div>
 
     <script>
+        function formatRp(el, hiddenId) {
+            let raw = el.value.replace(/\D/g, '');
+            document.getElementById(hiddenId).value = raw;
+            el.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
         function openEditUmum(data) {
             document.getElementById('eu_id').value = data.id;
             document.getElementById('eu_tanggal').value = data.tanggal;
-            document.getElementById('eu_nominal').value = Math.round(data.nominal);
+            
+            document.getElementById('eu_nominal_hidden').value = Math.round(data.nominal);
+            document.getElementById('eu_nominal').value = Math.round(data.nominal).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            
             document.getElementById('eu_keterangan').value = data.keterangan || '';
             document.getElementById('modalEditUmum').classList.remove('hidden');
         }

@@ -475,11 +475,13 @@ $pemasukan_bulan_ini = mysqli_fetch_assoc($q_pemasukan)['total'] ?? 0;
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-500 mb-1">Modal (Rp)</label>
-                        <input type="number" name="edit_harga_modal" id="ep_modal" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        <input type="hidden" name="edit_harga_modal" id="ep_modal_hidden">
+                        <input type="text" inputmode="numeric" id="ep_modal" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" oninput="formatRp(this, 'ep_modal_hidden')">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-500 mb-1">Jual (Rp)</label>
-                        <input type="number" name="edit_harga_jual" id="ep_jual" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        <input type="hidden" name="edit_harga_jual" id="ep_jual_hidden">
+                        <input type="text" inputmode="numeric" id="ep_jual" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" oninput="formatRp(this, 'ep_jual_hidden')">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-xs font-medium text-slate-500 mb-1">Keterangan</label>
@@ -513,7 +515,8 @@ $pemasukan_bulan_ini = mysqli_fetch_assoc($q_pemasukan)['total'] ?? 0;
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-500 mb-1">Nominal (Rp)</label>
-                        <input type="number" name="edit_nominal" id="eu_nominal" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        <input type="hidden" name="edit_nominal" id="eu_nominal_hidden">
+                        <input type="text" inputmode="numeric" id="eu_nominal" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" oninput="formatRp(this, 'eu_nominal_hidden')">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-xs font-medium text-slate-500 mb-1">Keterangan</label>
@@ -529,12 +532,23 @@ $pemasukan_bulan_ini = mysqli_fetch_assoc($q_pemasukan)['total'] ?? 0;
     </div>
 
     <script>
+        function formatRp(el, hiddenId) {
+            let raw = el.value.replace(/\D/g, '');
+            document.getElementById(hiddenId).value = raw;
+            el.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
         function openEditPenjualan(data) {
             document.getElementById('ep_id').value = data.id;
             document.getElementById('ep_produk').value = data.produk;
             document.getElementById('ep_no_tujuan').value = data.no_tujuan;
-            document.getElementById('ep_modal').value = Math.round(data.harga_modal);
-            document.getElementById('ep_jual').value = Math.round(data.harga_jual);
+            
+            document.getElementById('ep_modal_hidden').value = Math.round(data.harga_modal);
+            document.getElementById('ep_modal').value = Math.round(data.harga_modal).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            
+            document.getElementById('ep_jual_hidden').value = Math.round(data.harga_jual);
+            document.getElementById('ep_jual').value = Math.round(data.harga_jual).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            
             document.getElementById('ep_keterangan').value = data.keterangan || '';
             document.getElementById('modalEditPenjualan').classList.remove('hidden');
         }
@@ -542,7 +556,10 @@ $pemasukan_bulan_ini = mysqli_fetch_assoc($q_pemasukan)['total'] ?? 0;
         function openEditUmum(data) {
             document.getElementById('eu_id').value = data.id;
             document.getElementById('eu_tanggal').value = data.tanggal;
-            document.getElementById('eu_nominal').value = Math.round(data.nominal);
+            
+            document.getElementById('eu_nominal_hidden').value = Math.round(data.nominal);
+            document.getElementById('eu_nominal').value = Math.round(data.nominal).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            
             document.getElementById('eu_keterangan').value = data.keterangan || '';
             document.getElementById('modalEditUmum').classList.remove('hidden');
         }

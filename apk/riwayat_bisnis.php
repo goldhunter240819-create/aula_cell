@@ -171,11 +171,13 @@ if(isset($_POST['edit_penjualan'])) {
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Modal (Rp)</label>
-                        <input type="number" name="edit_harga_modal" id="ep_modal" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        <input type="hidden" name="edit_harga_modal" id="ep_modal_hidden">
+                        <input type="text" inputmode="numeric" id="ep_modal" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" oninput="formatRp(this, 'ep_modal_hidden')">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Jual (Rp)</label>
-                        <input type="number" name="edit_harga_jual" id="ep_jual" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        <input type="hidden" name="edit_harga_jual" id="ep_jual_hidden">
+                        <input type="text" inputmode="numeric" id="ep_jual" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" oninput="formatRp(this, 'ep_jual_hidden')">
                     </div>
                 </div>
                 <div>
@@ -191,12 +193,23 @@ if(isset($_POST['edit_penjualan'])) {
     </div>
 
     <script>
+        function formatRp(el, hiddenId) {
+            let raw = el.value.replace(/\D/g, '');
+            document.getElementById(hiddenId).value = raw;
+            el.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
         function openEditPenjualan(data) {
             document.getElementById('ep_id').value = data.id;
             document.getElementById('ep_produk').value = data.produk;
             document.getElementById('ep_no_tujuan').value = data.no_tujuan;
-            document.getElementById('ep_modal').value = Math.round(data.harga_modal);
-            document.getElementById('ep_jual').value = Math.round(data.harga_jual);
+            
+            document.getElementById('ep_modal_hidden').value = Math.round(data.harga_modal);
+            document.getElementById('ep_modal').value = Math.round(data.harga_modal).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            
+            document.getElementById('ep_jual_hidden').value = Math.round(data.harga_jual);
+            document.getElementById('ep_jual').value = Math.round(data.harga_jual).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            
             document.getElementById('ep_keterangan').value = data.keterangan || '';
             document.getElementById('modalEditPenjualan').classList.remove('hidden');
         }

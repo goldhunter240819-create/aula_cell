@@ -239,12 +239,14 @@ if(isset($_POST['submit'])) {
 
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2">Harga Modal (Rp)</label>
-                    <input type="number" name="harga_modal" id="harga_modal" required class="w-full px-4 py-3 rounded-xl input-glass" oninput="hitungLaba()">
+                    <input type="hidden" name="harga_modal" id="harga_modal">
+                    <input type="text" inputmode="numeric" id="harga_modal_display" required placeholder="10.000" class="w-full px-4 py-3 rounded-xl input-glass text-lg font-bold" oninput="formatRp(this, 'harga_modal'); hitungLaba();">
                 </div>
 
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2">Harga Jual (Rp)</label>
-                    <input type="number" name="harga_jual" id="harga_jual" required class="w-full px-4 py-3 rounded-xl input-glass" oninput="hitungLaba()">
+                    <input type="hidden" name="harga_jual" id="harga_jual">
+                    <input type="text" inputmode="numeric" id="harga_jual_display" required placeholder="15.000" class="w-full px-4 py-3 rounded-xl input-glass text-lg font-bold" oninput="formatRp(this, 'harga_jual'); hitungLaba();">
                 </div>
                 
                 <div class="md:col-span-2">
@@ -323,6 +325,12 @@ if(isset($_POST['submit'])) {
     </main>
 
     <script>
+        function formatRp(el, hiddenId) {
+            let raw = el.value.replace(/\D/g, '');
+            document.getElementById(hiddenId).value = raw;
+            el.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
         function hitungLaba() {
             const m = parseInt(document.getElementById('harga_modal').value) || 0;
             const j = parseInt(document.getElementById('harga_jual').value) || 0;

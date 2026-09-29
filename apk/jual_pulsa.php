@@ -149,12 +149,14 @@ if(isset($_POST['submit'])) {
         
         <div>
             <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Modal (Rp)</label>
-            <input type="number" name="harga_modal" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+            <input type="hidden" name="harga_modal" id="hiddenModal">
+            <input type="text" inputmode="numeric" required placeholder="10.000" oninput="formatRp(this, 'hiddenModal')" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
         </div>
         
         <div>
             <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Jual (Rp)</label>
-            <input type="number" name="harga_jual" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+            <input type="hidden" name="harga_jual" id="hiddenJual">
+            <input type="text" inputmode="numeric" required placeholder="15.000" oninput="formatRp(this, 'hiddenJual')" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
         </div>
         
         <div>
@@ -349,6 +351,12 @@ if(isset($_POST['submit'])) {
                     input.required = false;
                     input.value = '';
                 }
+            }
+
+            function formatRp(el, hiddenId) {
+                let raw = el.value.replace(/\D/g, '');
+                document.getElementById(hiddenId).value = raw;
+                el.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
             }
         </script>
 </body>

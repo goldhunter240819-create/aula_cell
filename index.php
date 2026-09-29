@@ -13,6 +13,17 @@ $saldo_bisnis = mysqli_fetch_assoc($q_saldo_bisnis)['total'] ?? 0;
 $bulan_ini = date('Y-m');
 $q_laba = mysqli_query($conn, "SELECT SUM(laba) as total_laba FROM transaksi_penjualan WHERE status = 'Sukses' AND DATE_FORMAT(tanggal, '%Y-%m') = '$bulan_ini'");
 $laba_bulan_ini = mysqli_fetch_assoc($q_laba)['total_laba'] ?? 0;
+
+// Detail Dompet Bisnis
+$q_detail_bisnis = mysqli_query($conn, "SELECT nama_dompet, saldo FROM dompet WHERE tipe = 'Bisnis' ORDER BY id ASC");
+$detail_bisnis = [];
+while($row = mysqli_fetch_assoc($q_detail_bisnis)) {
+    $detail_bisnis[] = $row;
+}
+
+// Total Hutang (Uang di luar)
+$q_hutang = mysqli_query($conn, "SELECT SUM(harga_jual) as total FROM transaksi_penjualan WHERE status_pembayaran = 'Hutang'");
+$total_hutang = ($q_hutang) ? (mysqli_fetch_assoc($q_hutang)['total'] ?? 0) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -157,19 +168,38 @@ $laba_bulan_ini = mysqli_fetch_assoc($q_laba)['total_laba'] ?? 0;
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             <!-- Card 1 -->
-            <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+            <div class="glass-card rounded-2xl p-6 relative overflow-hidden group flex flex-col justify-between">
                 <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
-                <div class="flex items-start justify-between">
-                    <div>
-                        <p class="text-slate-500 text-sm font-medium mb-1">Saldo Bisnis (Modal)</p>
-                        <h3 class="text-3xl font-bold text-slate-800">Rp <?= number_format($saldo_bisnis, 0, ',', '.') ?></h3>
+                <div>
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <p class="text-slate-500 text-sm font-medium mb-1">Total Modal Bisnis</p>
+                            <h3 class="text-3xl font-bold text-slate-800">Rp <?= number_format($saldo_bisnis, 0, ',', '.') ?></h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                            <i class="fa-solid fa-store text-xl"></i>
+                        </div>
                     </div>
-                    <div class="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                        <i class="fa-solid fa-store text-xl"></i>
+                    
+                    <div class="flex flex-col gap-2 pt-3 border-t border-slate-100">
+                        <?php foreach($detail_bisnis as $db): ?>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2 text-xs text-slate-600">
+                                <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                                <?= $db['nama_dompet'] ?>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800">Rp <?= number_format($db['saldo'], 0, ',', '.') ?></span>
+                        </div>
+                        <?php endforeach; ?>
+                        
+                        <div class="flex justify-between items-center pt-2 mt-1 border-t border-slate-50 border-dashed">
+                            <div class="flex items-center gap-2 text-xs text-rose-500">
+                                <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
+                                Uang di Luar (Hutang)
+                            </div>
+                            <span class="text-xs font-bold text-rose-600">Rp <?= number_format($total_hutang, 0, ',', '.') ?></span>
+                        </div>
                     </div>
-                </div>
-                <div class="mt-4 text-xs text-emerald-400 flex items-center gap-1">
-                    <i class="fa-solid fa-circle-check"></i> Siap untuk transaksi
                 </div>
             </div>
 
