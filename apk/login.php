@@ -204,7 +204,7 @@ if(isset($_POST['login'])) {
                     </button>
                     <button type="button" id="biometricLoginBtn" onclick="loginWithBiometric()" 
                         class="w-14 bg-gradient-to-br from-emerald-500 to-teal-500 text-white rounded-xl shadow-lg shadow-emerald-500/30 active:scale-90 transition-all flex items-center justify-center"
-                        style="display:none;" title="Login Biometrik">
+                        title="Login Biometrik">
                         <i class="fa-solid fa-fingerprint text-xl" id="biometricIcon"></i>
                     </button>
                 </div>
@@ -309,6 +309,19 @@ if(isset($_POST['login'])) {
             // Cek browser support dulu
             if (!window.PublicKeyCredential) {
                 showToast('Browser tidak mendukung biometrik', 'error');
+                return;
+            }
+            
+            // Cek dulu apakah ada credential terdaftar
+            try {
+                const checkRes = await fetch('api_biometric.php?action=check');
+                const checkData = await checkRes.json();
+                if (!checkData.success || !checkData.has_credentials) {
+                    showToast('Belum ada biometrik terdaftar. Daftarkan di menu Pengaturan', 'error');
+                    return;
+                }
+            } catch(e) {
+                showToast('Gagal cek biometrik', 'error');
                 return;
             }
             

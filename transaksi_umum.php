@@ -206,7 +206,8 @@ if(isset($_POST['submit'])) {
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Nominal (Rp)</label>
-                    <input type="number" name="nominal" required placeholder="50000" class="w-full px-4 py-3 rounded-xl input-glass transition-all text-lg font-bold">
+                    <input type="hidden" name="nominal" id="nominalDesktopPribadi">
+                    <input type="text" inputmode="numeric" required placeholder="10.000" oninput="formatNominal(this, 'nominalDesktopPribadi')" class="w-full px-4 py-3 rounded-xl input-glass transition-all text-lg font-bold">
                 </div>
                 
 
@@ -238,4 +239,11 @@ if(isset($_POST['submit'])) {
     </main>
 
 </body>
+<script>
+function formatNominal(el, hiddenId) {
+    let raw = el.value.replace(/\D/g, '');
+    document.getElementById(hiddenId).value = raw;
+    el.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+</script>
 </html>

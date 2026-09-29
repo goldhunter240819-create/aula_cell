@@ -177,7 +177,8 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
                     </div>
                     <div>
                         <label class="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Nominal (Rp)</label>
-                        <input type="number" name="nominal" required placeholder="50000" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+                        <input type="hidden" name="nominal" id="nominalPemasukan">
+                        <input type="text" inputmode="numeric" required placeholder="10.000" oninput="formatNominal(this, 'nominalPemasukan')" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
                     </div>
                     <div>
                         <label class="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Dompet</label>
@@ -215,7 +216,8 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
                     </div>
                     <div>
                         <label class="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Nominal (Rp)</label>
-                        <input type="number" name="nominal" required placeholder="50000" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500">
+                        <input type="hidden" name="nominal" id="nominalPengeluaran">
+                        <input type="text" inputmode="numeric" required placeholder="10.000" oninput="formatNominal(this, 'nominalPengeluaran')" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500">
                     </div>
                     <div>
                         <label class="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Dompet</label>
@@ -245,6 +247,11 @@ while($d = mysqli_fetch_assoc($q_dompet)) {
         function closeModal(id) {
             document.getElementById(id).style.display = 'none';
             document.body.style.overflow = '';
+        }
+        function formatNominal(el, hiddenId) {
+            let raw = el.value.replace(/\D/g, '');
+            document.getElementById(hiddenId).value = raw;
+            el.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
     </script>
 </body>
