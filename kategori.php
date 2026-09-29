@@ -53,7 +53,7 @@ if(isset($_GET['hapus'])) {
 <body class="font-sans antialiased min-h-screen flex flex-col md:flex-row md:p-6 md:gap-8 overflow-x-hidden">
 
         <!-- Sidebar -->
-    <aside class="w-full md:w-64 bg-gradient-to-b from-blue-900 to-primary text-white p-5 flex flex-col gap-6 rounded-3xl md:h-[calc(100vh-3rem)] sticky top-6 z-20 shadow-2xl overflow-y-auto border border-blue-800/50">
+    <aside class="w-full md:w-64 bg-gradient-to-b from-blue-900 to-primary text-white p-4 flex flex-col gap-4 rounded-3xl md:h-[calc(100vh-3rem)] sticky top-6 z-20 shadow-2xl overflow-y-auto border border-blue-800/50 no-scrollbar">
         <?php $current_page = basename($_SERVER["PHP_SELF"]); ?>
         <style> details > summary { list-style: none; } details > summary::-webkit-details-marker { display: none; } </style>
         <div class="flex items-center gap-3 px-2">
@@ -66,36 +66,36 @@ if(isset($_GET['hapus'])) {
             </div>
         </div>
 
-        <nav class="flex-1 flex flex-col gap-2 mt-4 text-sm">
-            <a href="index.php" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors <?= ($current_page == 'index.php') ? 'bg-white/20 text-white font-bold shadow-inner' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
+        <nav class="flex-1 flex flex-col gap-1 mt-2 text-sm">
+            <a href="index.php" class="flex items-center gap-3 px-3 py-2 rounded-xl transition-colors <?= ($current_page == 'index.php') ? 'bg-white/20 text-white font-bold shadow-inner' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
                 <i class="fa-solid fa-house w-4 text-center"></i> Dashboard
             </a>
             
             <!-- Bisnis Dropdown -->
             <details class="group" <?= in_array($current_page, ['jual_pulsa.php', 'laporan_bisnis.php', 'transaksi_bisnis_umum.php', 'buku_hutang.php', 'kategori.php', 'pelanggan.php']) ? 'open' : '' ?>>
-                <summary class="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-blue-200 hover:bg-white/10 hover:text-white transition-colors cursor-pointer select-none">
+                <summary class="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-xl text-blue-200 hover:bg-white/10 hover:text-white transition-colors cursor-pointer select-none">
                     <div class="flex items-center gap-3">
                         <i class="fa-solid fa-store w-4 text-center"></i> Bisnis
                     </div>
                     <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
                 </summary>
-                <div class="flex flex-col gap-1 pl-4 pr-2 py-1 mt-1 border-l-2 border-white/10 ml-6">
-                    <a href="jual_pulsa.php" class="text-sm py-2 px-3 rounded-lg transition-colors <?= ($current_page == 'jual_pulsa.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
+                <div class="flex flex-col gap-1 pl-4 pr-2 py-1 mt-0.5 border-l-2 border-white/10 ml-6">
+                    <a href="jual_pulsa.php" class="text-sm py-1.5 px-3 rounded-lg transition-colors <?= ($current_page == 'jual_pulsa.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
                         <i class="fa-solid fa-pen-to-square w-4 mr-1 text-center"></i> Jual Beli Pulsa
                     </a>
-                    <a href="transaksi_bisnis_umum.php" class="text-sm py-2 px-3 rounded-lg transition-colors <?= ($current_page == 'transaksi_bisnis_umum.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
+                    <a href="transaksi_bisnis_umum.php" class="text-sm py-1.5 px-3 rounded-lg transition-colors <?= ($current_page == 'transaksi_bisnis_umum.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
                         <i class="fa-solid fa-briefcase w-4 mr-1 text-center"></i> Operasional Bisnis
                     </a>
-                    <a href="kategori.php" class="text-sm py-2 px-3 rounded-lg transition-colors <?= ($current_page == 'kategori.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
+                    <a href="kategori.php" class="text-sm py-1.5 px-3 rounded-lg transition-colors <?= ($current_page == 'kategori.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
                         <i class="fa-solid fa-tags w-4 mr-1 text-center"></i> Kategori Produk
                     </a>
-                    <a href="laporan_bisnis.php" class="text-sm py-2 px-3 rounded-lg transition-colors <?= ($current_page == 'laporan_bisnis.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
+                    <a href="laporan_bisnis.php" class="text-sm py-1.5 px-3 rounded-lg transition-colors <?= ($current_page == 'laporan_bisnis.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
                         <i class="fa-solid fa-chart-line w-4 mr-1 text-center"></i> Laporan
                     </a>
-                    <a href="buku_hutang.php" class="text-sm py-2 px-3 rounded-lg transition-colors <?= ($current_page == 'buku_hutang.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
+                    <a href="buku_hutang.php" class="text-sm py-1.5 px-3 rounded-lg transition-colors <?= ($current_page == 'buku_hutang.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
                         <i class="fa-solid fa-book w-4 mr-1 text-center"></i> Buku Hutang
                     </a>
-                    <a href="pelanggan.php" class="text-sm py-2 px-3 rounded-lg transition-colors <?= ($current_page == 'pelanggan.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
+                    <a href="pelanggan.php" class="text-sm py-1.5 px-3 rounded-lg transition-colors <?= ($current_page == 'pelanggan.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
                         <i class="fa-solid fa-address-book w-4 mr-1 text-center"></i> Buku Pelanggan
                     </a>
                 </div>
@@ -103,24 +103,24 @@ if(isset($_GET['hapus'])) {
 
             <!-- Pribadi Dropdown -->
             <details class="group" <?= in_array($current_page, ['transaksi_umum.php', 'laporan_pribadi.php']) ? 'open' : '' ?>>
-                <summary class="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-blue-200 hover:bg-white/10 hover:text-white transition-colors cursor-pointer select-none">
+                <summary class="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-xl text-blue-200 hover:bg-white/10 hover:text-white transition-colors cursor-pointer select-none">
                     <div class="flex items-center gap-3">
                         <i class="fa-solid fa-user w-4 text-center"></i> Pribadi
                     </div>
                     <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
                 </summary>
-                <div class="flex flex-col gap-1 pl-4 pr-2 py-1 mt-1 border-l-2 border-white/10 ml-6">
-                    <a href="transaksi_umum.php" class="text-sm py-2 px-3 rounded-lg transition-colors <?= ($current_page == 'transaksi_umum.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
+                <div class="flex flex-col gap-1 pl-4 pr-2 py-1 mt-0.5 border-l-2 border-white/10 ml-6">
+                    <a href="transaksi_umum.php" class="text-sm py-1.5 px-3 rounded-lg transition-colors <?= ($current_page == 'transaksi_umum.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
                         <i class="fa-solid fa-pen-to-square w-4 mr-1 text-center"></i> Pencatatan
                     </a>
-                    <a href="laporan_pribadi.php" class="text-sm py-2 px-3 rounded-lg transition-colors <?= ($current_page == 'laporan_pribadi.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
+                    <a href="laporan_pribadi.php" class="text-sm py-1.5 px-3 rounded-lg transition-colors <?= ($current_page == 'laporan_pribadi.php') ? 'bg-white/20 text-white font-bold' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
                         <i class="fa-solid fa-chart-line w-4 mr-1 text-center"></i> Laporan
                     </a>
                 </div>
             </details>
             
             <!-- Pengaturan -->
-            <a href="pengaturan.php" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors <?= ($current_page == 'pengaturan.php') ? 'bg-white/20 text-white font-bold shadow-inner' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
+            <a href="pengaturan.php" class="flex items-center gap-3 px-3 py-2 rounded-xl transition-colors <?= ($current_page == 'pengaturan.php') ? 'bg-white/20 text-white font-bold shadow-inner' : 'text-blue-200 hover:bg-white/10 hover:text-white' ?>">
                 <i class="fa-solid fa-gear w-4 text-center"></i> Pengaturan
             </a>
         </nav>
