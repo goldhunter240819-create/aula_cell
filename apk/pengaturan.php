@@ -159,6 +159,13 @@ if(isset($_POST["ubah_password"])){
         </button>
     </form>
     
+    <a href="logout.php" class="mt-4 w-full flex items-center justify-center gap-2 p-4 rounded-[1.25rem] bg-red-50 text-red-600 font-black border border-red-100 shadow-sm active:scale-95 transition-transform">
+        <i class="fa-solid fa-power-off"></i> Keluar Aplikasi
+    </a>
+
+            </main>
+        </div>
+    
     <script>
         function togglePasswordForm() {
             const form = document.getElementById('form_password');

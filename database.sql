@@ -23,6 +23,14 @@ CREATE TABLE IF NOT EXISTS webauthn_credentials (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- Tabel Pelanggan (Kontak / Buku Pelanggan)
+CREATE TABLE IF NOT EXISTS pelanggan (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    no_hp VARCHAR(20) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Tabel Kategori (Pribadi & Bisnis)
 CREATE TABLE IF NOT EXISTS kategori (
     id INT AUTO_INCREMENT PRIMARY KEY,
