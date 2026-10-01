@@ -8,6 +8,13 @@ $uid = $_SESSION['user_id'];
 $q_saldo_pribadi = mysqli_query($conn, "SELECT SUM(saldo) as total FROM dompet WHERE tipe = 'Pribadi' AND user_id = $uid");
 $saldo_pribadi = mysqli_fetch_assoc($q_saldo_pribadi)["total"] ?? 0;
 
+// Detail Dompet Pribadi
+$q_detail_pribadi = mysqli_query($conn, "SELECT nama_dompet, saldo FROM dompet WHERE tipe = 'Pribadi' AND user_id = $uid ORDER BY id ASC");
+$detail_pribadi = [];
+while($row = mysqli_fetch_assoc($q_detail_pribadi)) {
+    $detail_pribadi[] = $row;
+}
+
 // Saldo Bisnis (Total)
 $q_saldo_bisnis = mysqli_query($conn, "SELECT SUM(saldo) as total FROM dompet WHERE tipe = 'Bisnis'");
 $saldo_bisnis = mysqli_fetch_assoc($q_saldo_bisnis)["total"] ?? 0;
@@ -155,14 +162,31 @@ $foto_url = empty($foto) ? "../aulalogo.png" : "../uploads/" . $foto;
                     </div>
                     
                     <!-- Card Pribadi -->
-                    <div class="bg-white rounded-[1.25rem] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-slate-200 flex justify-between items-center relative overflow-hidden">
+                    <div class="bg-white rounded-[1.25rem] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-slate-200 relative overflow-hidden">
                         <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-emerald-500"></div>
-                        <div class="pl-2 relative z-10">
-                            <p class="text-slate-500 text-[11px] font-extrabold uppercase tracking-widest mb-1">Uang Pribadi</p>
-                            <h3 class="text-2xl font-black text-slate-800 tracking-tight">Rp <?= number_format($saldo_pribadi, 0, ',', '.') ?></h3>
+                        
+                        <!-- Header Card Pribadi -->
+                        <div class="flex justify-between items-center mb-4 pl-2">
+                            <div>
+                                <p class="text-slate-500 text-[11px] font-extrabold uppercase tracking-widest mb-1">Total Uang Pribadi</p>
+                                <h3 class="text-2xl font-black text-slate-800 tracking-tight">Rp <?= number_format($saldo_pribadi, 0, ',', '.') ?></h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center relative z-10">
+                                <i class="fa-solid fa-user text-emerald-500 text-xl"></i>
+                            </div>
                         </div>
-                        <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center relative z-10">
-                            <i class="fa-solid fa-user text-emerald-500 text-xl"></i>
+
+                        <!-- Breakdown Saldo Pribadi -->
+                        <div class="pl-2 pt-4 border-t border-slate-100 flex flex-col gap-2.5">
+                            <?php foreach($detail_pribadi as $dp): ?>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                                    <span class="text-xs font-bold text-slate-600"><?= $dp['nama_dompet'] ?></span>
+                                </div>
+                                <span class="text-xs font-black text-slate-800">Rp <?= number_format($dp['saldo'], 0, ',', '.') ?></span>
+                            </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </div>

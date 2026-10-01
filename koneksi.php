@@ -40,14 +40,17 @@ if(isset($_SESSION['user_id'])) {
         mysqli_query($conn, "UPDATE dompet SET user_id = 1 WHERE tipe = 'Pribadi'");
     }
     
-    // Ensure the current user has a personal wallet
-    $cek_wallet = mysqli_query($conn, "SELECT id FROM dompet WHERE tipe = 'Pribadi' AND user_id = $uid");
-    if(mysqli_num_rows($cek_wallet) == 0) {
-        $q_user = mysqli_query($conn, "SELECT nama_lengkap FROM users WHERE id = $uid");
-        if($u = mysqli_fetch_assoc($q_user)) {
-            $nama = "Kas " . strtok($u['nama_lengkap'], " ");
-            mysqli_query($conn, "INSERT INTO dompet (nama_dompet, tipe, user_id, saldo) VALUES ('$nama', 'Pribadi', $uid, 0)");
-        }
+    // Ensure the current user has Cash and Saldo wallets
+    $cek_cash = mysqli_query($conn, "SELECT id FROM dompet WHERE tipe = 'Pribadi' AND user_id = $uid AND (nama_dompet LIKE '%Cash%' OR nama_dompet LIKE '%Kas%')");
+    if(mysqli_num_rows($cek_cash) == 0) {
+        mysqli_query($conn, "INSERT INTO dompet (nama_dompet, tipe, user_id, saldo) VALUES ('Cash', 'Pribadi', $uid, 0)");
+    } else {
+        mysqli_query($conn, "UPDATE dompet SET nama_dompet = 'Cash' WHERE tipe = 'Pribadi' AND user_id = $uid AND (nama_dompet LIKE '%Kas%')");
+    }
+
+    $cek_saldo = mysqli_query($conn, "SELECT id FROM dompet WHERE tipe = 'Pribadi' AND user_id = $uid AND nama_dompet LIKE '%Saldo%'");
+    if(mysqli_num_rows($cek_saldo) == 0) {
+        mysqli_query($conn, "INSERT INTO dompet (nama_dompet, tipe, user_id, saldo) VALUES ('Saldo', 'Pribadi', $uid, 0)");
     }
 }
 ?>
