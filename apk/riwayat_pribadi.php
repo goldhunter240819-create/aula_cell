@@ -49,10 +49,12 @@ require '../koneksi.php';
                             $bg = $is_in ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500';
                             $icon = $is_in ? 'fa-arrow-down' : 'fa-arrow-up';
                     ?>
-                    <div class="bg-white p-4 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-200">
-                        <div class="flex justify-between items-center">
+                    <div class="bg-white p-4 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-200 relative group">
+                        
+                        <!-- Header & Action Buttons -->
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex gap-3 items-center flex-1 min-w-0">
-                                <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm flex-shrink-0 <?= $bg ?>">
+                                <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm flex-shrink-0 <?= $bg ?>">
                                     <i class="fa-solid <?= $icon ?>"></i>
                                 </div>
                                 <div class="min-w-0">
@@ -60,12 +62,28 @@ require '../koneksi.php';
                                     <p class="text-[10px] text-slate-500 font-semibold"><?= date('d M Y', strtotime($r['tanggal'])) ?> &bull; <?= $r['nama_dompet'] ?></p>
                                 </div>
                             </div>
-                            <div class="text-right flex-shrink-0 ml-2">
-                                <p class="font-extrabold text-sm <?= $color ?>"><?= $sign ?>Rp <?= number_format($r['nominal'],0,',','.') ?></p>
-                                <p class="text-[10px] text-slate-400 font-semibold"><?= $r['nama_kategori'] ?></p>
+                            
+                            <!-- Minimalist Edit & Delete -->
+                            <div class="flex items-center gap-3 ml-2 text-slate-300">
+                                <a href="edit_transaksi_umum.php?id=<?= $r['id'] ?>" class="hover:text-blue-500 transition-colors"><i class="fa-solid fa-pen text-[11px]"></i></a>
+                                <a href="hapus_transaksi_umum.php?id=<?= $r['id'] ?>" onclick="return confirm('Hapus riwayat transaksi ini?')" class="hover:text-red-500 transition-colors"><i class="fa-solid fa-trash text-[11px]"></i></a>
                             </div>
                         </div>
 
+                        <!-- Divider -->
+                        <div class="w-full h-px border-t border-dashed border-slate-200 mb-2.5"></div>
+
+                        <!-- Footer -->
+                        <div class="flex justify-between items-end">
+                            <div class="flex gap-1.5 pb-0.5">
+                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-50 text-slate-500"><?= $r['nama_kategori'] ?></span>
+                            </div>
+                            
+                            <div class="text-right">
+                                <p class="font-extrabold text-sm <?= $color ?>"><?= $sign ?>Rp <?= number_format($r['nominal'],0,',','.') ?></p>
+                            </div>
+                        </div>
+                        
                     </div>
                     <?php endwhile; endif; ?>
                 </div>

@@ -46,30 +46,53 @@ require '../koneksi.php';
                             $status_color = $r['status'] == 'Sukses' ? 'text-emerald-500 bg-emerald-50' : ($r['status'] == 'Pending' ? 'text-amber-500 bg-amber-50' : 'text-red-500 bg-red-50');
                             $status_bayar_color = (isset($r['status_pembayaran']) && $r['status_pembayaran'] == 'Lunas') ? 'text-emerald-600 bg-emerald-100' : 'text-rose-600 bg-rose-100';
                     ?>
-                    <div class="bg-white p-4 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-200">
-                        <div class="flex justify-between items-center">
+                    <div class="bg-white p-4 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-200 relative group">
+                        
+                        <!-- Header & Action Buttons -->
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex gap-3 items-center flex-1 min-w-0">
-                                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-primary text-sm flex-shrink-0">
+                                <div class="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-primary text-sm flex-shrink-0">
                                     <i class="fa-solid fa-mobile-screen"></i>
                                 </div>
                                 <div class="min-w-0">
                                     <h4 class="font-bold text-sm text-slate-800 truncate"><?= $r['produk'] ?></h4>
-                                    <p class="text-[10px] text-slate-500 font-semibold mb-1"><?= date('d M Y', strtotime($r['tanggal'])) ?> &bull; <?= $r['no_tujuan'] ?></p>
-                                    <div class="flex items-center gap-2 text-[10px] font-bold">
-                                        <span class="text-slate-500">M: Rp <?= number_format($r['harga_modal'] ?? 0,0,',','.') ?></span>
-                                        <span class="text-emerald-600">J: Rp <?= number_format($r['harga_jual'] ?? 0,0,',','.') ?></span>
-                                    </div>
+                                    <p class="text-[10px] text-slate-500 font-semibold"><?= date('d M Y', strtotime($r['tanggal'])) ?> &bull; <?= $r['no_tujuan'] ?></p>
                                 </div>
                             </div>
-                            <div class="text-right flex-shrink-0 ml-2 flex flex-col items-end gap-1.5">
-                                <p class="font-extrabold text-sm text-emerald-600">+Rp <?= number_format(($r['harga_jual'] ?? 0) - ($r['harga_modal'] ?? 0),0,',','.') ?></p>
-                                <div class="flex gap-1">
-                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded <?= $status_bayar_color ?>"><?= $r['status_pembayaran'] ?? 'Lunas' ?></span>
-                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded <?= $status_color ?>"><?= $r['status'] ?></span>
-                                </div>
+                            
+                            <!-- Minimalist Edit & Delete -->
+                            <div class="flex items-center gap-3 ml-2 text-slate-300">
+                                <a href="edit_penjualan.php?id=<?= $r['id'] ?>" class="hover:text-blue-500 transition-colors"><i class="fa-solid fa-pen text-[11px]"></i></a>
+                                <a href="hapus_penjualan.php?id=<?= $r['id'] ?>" onclick="return confirm('Hapus riwayat penjualan ini?')" class="hover:text-red-500 transition-colors"><i class="fa-solid fa-trash text-[11px]"></i></a>
                             </div>
                         </div>
 
+                        <!-- Divider -->
+                        <div class="w-full h-px border-t border-dashed border-slate-200 mb-2.5"></div>
+
+                        <!-- Footer: Status & Stacked Financials -->
+                        <div class="flex justify-between items-end">
+                            <div class="flex gap-1.5 pb-0.5">
+                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded <?= $status_bayar_color ?>"><?= $r['status_pembayaran'] ?? 'Lunas' ?></span>
+                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded <?= $status_color ?>"><?= $r['status'] ?></span>
+                            </div>
+                            
+                            <div class="flex flex-col items-end gap-0.5 text-right">
+                                <div class="text-[10px] flex justify-between w-32">
+                                    <span class="text-slate-500">Modal</span>
+                                    <span class="font-semibold text-slate-600">Rp <?= number_format($r['harga_modal'] ?? 0,0,',','.') ?></span>
+                                </div>
+                                <div class="text-[10px] flex justify-between w-32">
+                                    <span class="text-slate-500">Jual</span>
+                                    <span class="font-semibold text-slate-600">Rp <?= number_format($r['harga_jual'] ?? 0,0,',','.') ?></span>
+                                </div>
+                                <div class="text-[11px] font-bold flex justify-between w-32 mt-0.5 pt-0.5 border-t border-slate-100">
+                                    <span class="text-slate-600">Laba</span>
+                                    <span class="text-emerald-600">+Rp <?= number_format(($r['harga_jual'] ?? 0) - ($r['harga_modal'] ?? 0),0,',','.') ?></span>
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
                     <?php endwhile; endif; ?>
                 </div>
