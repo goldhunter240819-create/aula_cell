@@ -12,6 +12,7 @@ require '../koneksi.php';
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         tailwind.config = { theme: { extend: { fontFamily: { sans: ["Nunito", "sans-serif"], }, colors: { primary: "#2563eb", secondary: "#3b82f6", bglight: "#f1f5f9", } } } }
     </script>
@@ -63,7 +64,7 @@ require '../koneksi.php';
                             <!-- Minimalist Edit & Delete -->
                             <div class="flex items-center gap-3 ml-2 text-slate-300">
                                 <a href="edit_penjualan.php?id=<?= $r['id'] ?>" class="hover:text-blue-500 transition-colors"><i class="fa-solid fa-pen text-[11px]"></i></a>
-                                <a href="hapus_penjualan.php?id=<?= $r['id'] ?>" onclick="return confirm('Hapus riwayat penjualan ini?')" class="hover:text-red-500 transition-colors"><i class="fa-solid fa-trash text-[11px]"></i></a>
+                                <a href="hapus_penjualan.php?id=<?= $r['id'] ?>" onclick="confirmDelete(event, this.href)" class="hover:text-red-500 transition-colors"><i class="fa-solid fa-trash text-[11px]"></i></a>
                             </div>
                         </div>
 
@@ -102,7 +103,30 @@ require '../koneksi.php';
         <?php include 'footer.php'; ?>
     </div>
 
-
+<script>
+function confirmDelete(e, url) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Yakin dihapus?',
+        text: "Riwayat ini akan hilang permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#94a3b8',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal',
+        customClass: {
+            popup: 'rounded-3xl shadow-2xl',
+            confirmButton: 'rounded-xl font-bold px-5 py-2.5',
+            cancelButton: 'rounded-xl font-bold px-5 py-2.5'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    })
+}
+</script>
 
 </body>
 </html>
