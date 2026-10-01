@@ -64,21 +64,27 @@ krsort($rekap_bulanan);
     <div class="mb-8">
         <!-- Baris 1: Pemasukan & Pengeluaran (2 Kolom) -->
         <div class="grid grid-cols-2 gap-3 mb-3">
-            <div class="bg-white rounded-[1.25rem] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-200">
-                <div class="flex items-center gap-2 mb-2">
-                    <div class="w-7 h-7 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center"><i class="fa-solid fa-arrow-down text-xs"></i></div>
-                    <p class="text-slate-400 text-[10px] font-extrabold uppercase tracking-widest">Pemasukan</p>
+            <a href="riwayat_pemasukan_bisnis.php" class="bg-white rounded-[1.25rem] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-200 active:scale-95 transition-transform block">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center"><i class="fa-solid fa-arrow-down text-xs"></i></div>
+                        <p class="text-slate-400 text-[10px] font-extrabold uppercase tracking-widest">Pemasukan</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300 text-[10px]"></i>
                 </div>
                 <h3 class="text-lg font-black text-slate-800">Rp <?= number_format($pemasukan_bulan_ini, 0, ',', '.') ?></h3>
-            </div>
+            </a>
             
-            <div class="bg-white rounded-[1.25rem] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-200">
-                <div class="flex items-center gap-2 mb-2">
-                    <div class="w-7 h-7 rounded-full bg-red-50 text-red-500 flex items-center justify-center"><i class="fa-solid fa-arrow-up text-xs"></i></div>
-                    <p class="text-slate-400 text-[10px] font-extrabold uppercase tracking-widest">Pengeluaran</p>
+            <a href="riwayat_pengeluaran_bisnis.php" class="bg-white rounded-[1.25rem] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-200 active:scale-95 transition-transform block">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-full bg-red-50 text-red-500 flex items-center justify-center"><i class="fa-solid fa-arrow-up text-xs"></i></div>
+                        <p class="text-slate-400 text-[10px] font-extrabold uppercase tracking-widest">Pengeluaran</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300 text-[10px]"></i>
                 </div>
                 <h3 class="text-lg font-black text-slate-800">Rp <?= number_format($pengeluaran_bulan_ini, 0, ',', '.') ?></h3>
-            </div>
+            </a>
         </div>
         
         <!-- Baris 2: Laba (1 Kolom Full) -->
@@ -91,45 +97,19 @@ krsort($rekap_bulanan);
         </div>
     </div>
     
-    <!-- RIWAYAT TRANSAKSI -->
-    <div class="flex flex-col gap-3 mb-8">
-        <a href="riwayat_bisnis.php" class="w-full bg-white border border-slate-200 shadow-sm p-4 rounded-2xl flex items-center justify-between active:scale-95 transition-transform">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-50 text-primary flex items-center justify-center">
-                    <i class="fa-solid fa-mobile-screen"></i>
-                </div>
-                <div class="text-left">
-                    <h4 class="font-bold text-sm text-slate-800">Riwayat Penjualan</h4>
-                    <p class="text-[10px] text-slate-500 font-semibold">Transaksi jual pulsa & lainnya</p>
-                </div>
+    <!-- RIWAYAT PENJUALAN -->
+    <a href="riwayat_bisnis.php" class="w-full bg-white border border-slate-200 shadow-sm p-4 rounded-2xl flex items-center justify-between mb-8 active:scale-95 transition-transform">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-blue-50 text-primary flex items-center justify-center">
+                <i class="fa-solid fa-mobile-screen"></i>
             </div>
-            <i class="fa-solid fa-chevron-right text-slate-300"></i>
-        </a>
-        <a href="riwayat_pemasukan_bisnis.php" class="w-full bg-white border border-slate-200 shadow-sm p-4 rounded-2xl flex items-center justify-between active:scale-95 transition-transform">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center">
-                    <i class="fa-solid fa-arrow-down"></i>
-                </div>
-                <div class="text-left">
-                    <h4 class="font-bold text-sm text-slate-800">Riwayat Pemasukan</h4>
-                    <p class="text-[10px] text-slate-500 font-semibold">Pemasukan lain konter</p>
-                </div>
+            <div class="text-left">
+                <h4 class="font-bold text-sm text-slate-800">Riwayat Penjualan</h4>
+                <p class="text-[10px] text-slate-500 font-semibold">Transaksi jual pulsa & lainnya</p>
             </div>
-            <i class="fa-solid fa-chevron-right text-slate-300"></i>
-        </a>
-        <a href="riwayat_pengeluaran_bisnis.php" class="w-full bg-white border border-slate-200 shadow-sm p-4 rounded-2xl flex items-center justify-between active:scale-95 transition-transform">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
-                    <i class="fa-solid fa-arrow-up"></i>
-                </div>
-                <div class="text-left">
-                    <h4 class="font-bold text-sm text-slate-800">Riwayat Pengeluaran</h4>
-                    <p class="text-[10px] text-slate-500 font-semibold">Pengeluaran konter</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-chevron-right text-slate-300"></i>
-        </a>
-    </div>
+        </div>
+        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+    </a>
 
     <div class="flex items-center gap-2 font-extrabold text-slate-800 mb-4">
         <i class="fa-solid fa-calendar-days text-primary"></i>
