@@ -16,6 +16,10 @@ $pengeluaran_bulan_ini = mysqli_fetch_assoc($q_pengeluaran)['total'] ?? 0;
 $q_pemasukan = mysqli_query($conn, "SELECT SUM(t.nominal) as total FROM transaksi_umum t JOIN dompet d ON t.id_dompet = d.id WHERE t.jenis = 'Pemasukan' AND d.tipe = 'Bisnis'");
 $pemasukan_bulan_ini = mysqli_fetch_assoc($q_pemasukan)['total'] ?? 0;
 
+// 4. Total Saldo Dompet Bisnis
+$q_saldo = mysqli_query($conn, "SELECT SUM(saldo) as total FROM dompet WHERE tipe = 'Bisnis'");
+$saldo_bisnis = mysqli_fetch_assoc($q_saldo)['total'] ?? 0;
+
 // REKAP BULANAN
 $rekap_bulanan = [];
 // Ambil Laba
@@ -54,9 +58,13 @@ krsort($rekap_bulanan);
     <div class="fixed inset-0 w-full max-w-[28rem] mx-auto bg-slate-50 shadow-2xl overflow-hidden flex flex-col">
         <div class="flex-1 overflow-y-auto pb-32 overflow-x-hidden pb-24">
             <div class="bg-gradient-to-r from-blue-700 to-blue-500 header-curve pt-10 pb-8 px-6 relative text-white">
-                <div class="flex items-center gap-4 mb-2">
+                <div class="flex items-center gap-4 mb-4">
                     <a href="index.php" class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm active:scale-95"><i class="fa-solid fa-arrow-left"></i></a>
                     <h1 class="text-xl font-extrabold tracking-tight">Laporan Bisnis</h1>
+                </div>
+                <div class="text-center">
+                    <p class="text-blue-100 text-[10px] font-bold uppercase tracking-widest mb-1"><i class="fa-solid fa-wallet mr-1"></i> Saldo Konter Saat Ini</p>
+                    <h2 class="text-3xl font-black tracking-tight">Rp <?= number_format($saldo_bisnis, 0, ',', '.') ?></h2>
                 </div>
             </div>
             <main class="px-5 pt-8 pb-10">
