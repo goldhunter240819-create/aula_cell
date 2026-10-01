@@ -73,8 +73,9 @@ if(isset($_POST['submit'])) {
 }
 
 // Persiapkan opsi dompet
+$uid = $_SESSION['user_id'];
 $dompet_options = "";
-$q_dompet = mysqli_query($conn, "SELECT * FROM dompet ORDER BY tipe, nama_dompet");
+$q_dompet = mysqli_query($conn, "SELECT * FROM dompet WHERE (tipe = 'Pribadi' AND user_id = $uid) OR tipe = 'Bisnis' ORDER BY tipe, nama_dompet");
 while($d = mysqli_fetch_assoc($q_dompet)) {
     $selected = ($d['id'] == $old['id_dompet']) ? 'selected' : '';
     $dompet_options .= "<option value=\"{$d['id']}\" $selected>{$d['nama_dompet']} ({$d['tipe']})</option>";

@@ -4,17 +4,18 @@ require '../koneksi.php';
 $bulan_ini = date('Y-m');
 $nama_bulan = date('F Y');
 
-$q_pemasukan = mysqli_query($conn, "SELECT SUM(t.nominal) as total FROM transaksi_umum t JOIN dompet d ON t.id_dompet = d.id WHERE t.jenis = 'Pemasukan' AND d.tipe = 'Pribadi'");
+$uid = $_SESSION['user_id'];
+$q_pemasukan = mysqli_query($conn, "SELECT SUM(t.nominal) as total FROM transaksi_umum t JOIN dompet d ON t.id_dompet = d.id WHERE t.jenis = 'Pemasukan' AND d.tipe = 'Pribadi' AND d.user_id = $uid");
 $pemasukan_bulan_ini = mysqli_fetch_assoc($q_pemasukan)['total'] ?? 0;
 
-$q_pengeluaran = mysqli_query($conn, "SELECT SUM(t.nominal) as total FROM transaksi_umum t JOIN dompet d ON t.id_dompet = d.id WHERE t.jenis = 'Pengeluaran' AND d.tipe = 'Pribadi'");
+$q_pengeluaran = mysqli_query($conn, "SELECT SUM(t.nominal) as total FROM transaksi_umum t JOIN dompet d ON t.id_dompet = d.id WHERE t.jenis = 'Pengeluaran' AND d.tipe = 'Pribadi' AND d.user_id = $uid");
 $pengeluaran_bulan_ini = mysqli_fetch_assoc($q_pengeluaran)['total'] ?? 0;
 
 $saldo_bersih = $pemasukan_bulan_ini - $pengeluaran_bulan_ini;
 
 // REKAP BULANAN
 $rekap_bulanan = [];
-$q3 = mysqli_query($conn, "SELECT DATE_FORMAT(t.tanggal, '%Y-%m') as bln, t.jenis, SUM(t.nominal) as total FROM transaksi_umum t JOIN dompet d ON t.id_dompet = d.id WHERE d.tipe = 'Pribadi' GROUP BY bln, t.jenis");
+$q3 = mysqli_query($conn, "SELECT DATE_FORMAT(t.tanggal, '%Y-%m') as bln, t.jenis, SUM(t.nominal) as total FROM transaksi_umum t JOIN dompet d ON t.id_dompet = d.id WHERE d.tipe = 'Pribadi' AND d.user_id = $uid GROUP BY bln, t.jenis");
 while($r = mysqli_fetch_assoc($q3)) {
     if($r['jenis'] == 'Pemasukan') $rekap_bulanan[$r['bln']]['pemasukan'] = $r['total'];
     if($r['jenis'] == 'Pengeluaran') $rekap_bulanan[$r['bln']]['pengeluaran'] = $r['total'];

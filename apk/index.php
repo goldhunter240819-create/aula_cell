@@ -4,7 +4,8 @@ require "../koneksi.php";
 $bulan_ini = date("Y-m");
 
 // Saldo Pribadi
-$q_saldo_pribadi = mysqli_query($conn, "SELECT SUM(saldo) as total FROM dompet WHERE tipe = 'Pribadi'");
+$uid = $_SESSION['user_id'];
+$q_saldo_pribadi = mysqli_query($conn, "SELECT SUM(saldo) as total FROM dompet WHERE tipe = 'Pribadi' AND user_id = $uid");
 $saldo_pribadi = mysqli_fetch_assoc($q_saldo_pribadi)["total"] ?? 0;
 
 // Saldo Bisnis (Total)

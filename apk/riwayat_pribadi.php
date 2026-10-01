@@ -39,7 +39,8 @@ require '../koneksi.php';
 
                 <div class="flex flex-col gap-3">
                     <?php 
-                    $q_umum = mysqli_query($conn, "SELECT t.*, k.nama_kategori, d.nama_dompet FROM transaksi_umum t JOIN kategori k ON t.id_kategori = k.id JOIN dompet d ON t.id_dompet = d.id WHERE d.tipe = 'Pribadi' ORDER BY t.tanggal DESC LIMIT 50");
+                    $uid = $_SESSION['user_id'];
+                    $q_umum = mysqli_query($conn, "SELECT t.*, k.nama_kategori, d.nama_dompet FROM transaksi_umum t JOIN kategori k ON t.id_kategori = k.id JOIN dompet d ON t.id_dompet = d.id WHERE d.tipe = 'Pribadi' AND d.user_id = $uid ORDER BY t.tanggal DESC LIMIT 50");
                     if(mysqli_num_rows($q_umum) == 0): ?>
                         <p class="text-sm text-slate-400 text-center italic py-4 bg-white rounded-2xl border border-slate-100">Belum ada transaksi</p>
                     <?php else:
