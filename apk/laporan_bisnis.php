@@ -91,19 +91,45 @@ krsort($rekap_bulanan);
         </div>
     </div>
     
-    <!-- ADDED: RIWAYAT TRANSAKSI BISNIS -->
-    <a href="riwayat_bisnis.php" class="w-full bg-white border border-slate-200 shadow-sm p-4 rounded-2xl flex items-center justify-between mb-8 active:scale-95 transition-transform">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-blue-50 text-primary flex items-center justify-center">
-                <i class="fa-solid fa-list-ul"></i>
+    <!-- RIWAYAT TRANSAKSI -->
+    <div class="flex flex-col gap-3 mb-8">
+        <a href="riwayat_bisnis.php" class="w-full bg-white border border-slate-200 shadow-sm p-4 rounded-2xl flex items-center justify-between active:scale-95 transition-transform">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-50 text-primary flex items-center justify-center">
+                    <i class="fa-solid fa-mobile-screen"></i>
+                </div>
+                <div class="text-left">
+                    <h4 class="font-bold text-sm text-slate-800">Riwayat Penjualan</h4>
+                    <p class="text-[10px] text-slate-500 font-semibold">Transaksi jual pulsa & lainnya</p>
+                </div>
             </div>
-            <div class="text-left">
-                <h4 class="font-bold text-sm text-slate-800">Riwayat Penjualan</h4>
-                <p class="text-[10px] text-slate-500 font-semibold">Lihat semua transaksi sebelumnya</p>
+            <i class="fa-solid fa-chevron-right text-slate-300"></i>
+        </a>
+        <a href="riwayat_pemasukan_bisnis.php" class="w-full bg-white border border-slate-200 shadow-sm p-4 rounded-2xl flex items-center justify-between active:scale-95 transition-transform">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center">
+                    <i class="fa-solid fa-arrow-down"></i>
+                </div>
+                <div class="text-left">
+                    <h4 class="font-bold text-sm text-slate-800">Riwayat Pemasukan</h4>
+                    <p class="text-[10px] text-slate-500 font-semibold">Pemasukan lain konter</p>
+                </div>
             </div>
-        </div>
-        <i class="fa-solid fa-chevron-right text-slate-300"></i>
-    </a>
+            <i class="fa-solid fa-chevron-right text-slate-300"></i>
+        </a>
+        <a href="riwayat_pengeluaran_bisnis.php" class="w-full bg-white border border-slate-200 shadow-sm p-4 rounded-2xl flex items-center justify-between active:scale-95 transition-transform">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </div>
+                <div class="text-left">
+                    <h4 class="font-bold text-sm text-slate-800">Riwayat Pengeluaran</h4>
+                    <p class="text-[10px] text-slate-500 font-semibold">Pengeluaran konter</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-300"></i>
+        </a>
+    </div>
 
     <div class="flex items-center gap-2 font-extrabold text-slate-800 mb-4">
         <i class="fa-solid fa-calendar-days text-primary"></i>

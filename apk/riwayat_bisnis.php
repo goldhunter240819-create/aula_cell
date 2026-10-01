@@ -1,64 +1,5 @@
 <?php
 require '../koneksi.php';
-
-$sukses_msg = "";
-$error_msg = "";
-
-// HANDLER: HAPUS PENJUALAN
-if(isset($_POST['hapus_penjualan'])) {
-    $id = (int)$_POST['id_transaksi'];
-    mysqli_begin_transaction($conn);
-    try {
-        $q = mysqli_query($conn, "SELECT * FROM transaksi_penjualan WHERE id = $id");
-        if(mysqli_num_rows($q) == 0) throw new Exception("Transaksi tidak ditemukan.");
-        $trx = mysqli_fetch_assoc($q);
-        
-        mysqli_query($conn, "UPDATE dompet SET saldo = saldo + {$trx['harga_modal']} WHERE id = {$trx['id_dompet_modal']}");
-        if($trx['status_pembayaran'] == 'Lunas') {
-            mysqli_query($conn, "UPDATE dompet SET saldo = saldo - {$trx['harga_jual']} WHERE id = {$trx['id_dompet_pemasukan']}");
-        }
-        mysqli_query($conn, "DELETE FROM transaksi_penjualan WHERE id = $id");
-        
-        mysqli_commit($conn);
-        $sukses_msg = "Transaksi '{$trx['produk']}' dihapus & saldo dikembalikan!";
-    } catch (Exception $e) {
-        mysqli_rollback($conn);
-        $error_msg = $e->getMessage();
-    }
-}
-
-// HANDLER: EDIT PENJUALAN
-if(isset($_POST['edit_penjualan'])) {
-    $id = (int)$_POST['id_transaksi'];
-    $produk = mysqli_real_escape_string($conn, $_POST['edit_produk']);
-    $no_tujuan = mysqli_real_escape_string($conn, $_POST['edit_no_tujuan']);
-    $harga_modal_baru = (int)$_POST['edit_harga_modal'];
-    $harga_jual_baru = (int)$_POST['edit_harga_jual'];
-    $keterangan = mysqli_real_escape_string($conn, $_POST['edit_keterangan'] ?? '');
-    
-    mysqli_begin_transaction($conn);
-    try {
-        $q = mysqli_query($conn, "SELECT * FROM transaksi_penjualan WHERE id = $id");
-        if(mysqli_num_rows($q) == 0) throw new Exception("Transaksi tidak ditemukan.");
-        $old = mysqli_fetch_assoc($q);
-        
-        $selisih_modal = $old['harga_modal'] - $harga_modal_baru;
-        mysqli_query($conn, "UPDATE dompet SET saldo = saldo + ($selisih_modal) WHERE id = {$old['id_dompet_modal']}");
-        
-        if($old['status_pembayaran'] == 'Lunas') {
-            $selisih_jual = $harga_jual_baru - $old['harga_jual'];
-            mysqli_query($conn, "UPDATE dompet SET saldo = saldo + ($selisih_jual) WHERE id = {$old['id_dompet_pemasukan']}");
-        }
-        
-        mysqli_query($conn, "UPDATE transaksi_penjualan SET produk='$produk', no_tujuan='$no_tujuan', harga_modal=$harga_modal_baru, harga_jual=$harga_jual_baru, keterangan='$keterangan' WHERE id = $id");
-        
-        mysqli_commit($conn);
-        $sukses_msg = "Transaksi '$produk' berhasil diedit!";
-    } catch (Exception $e) {
-        mysqli_rollback($conn);
-        $error_msg = $e->getMessage();
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -94,17 +35,6 @@ if(isset($_POST['edit_penjualan'])) {
             </div>
             
             <main class="px-5 pb-10">
-                <!-- Notifikasi -->
-                <?php if($sukses_msg): ?>
-                    <div class="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center gap-2 text-xs font-bold">
-                        <i class="fa-solid fa-circle-check"></i> <?= $sukses_msg ?>
-                    </div>
-                <?php endif; ?>
-                <?php if($error_msg): ?>
-                    <div class="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 flex items-center gap-2 text-xs font-bold">
-                        <i class="fa-solid fa-circle-exclamation"></i> <?= $error_msg ?>
-                    </div>
-                <?php endif; ?>
 
                 <div class="flex flex-col gap-3">
                     <?php 
@@ -131,18 +61,7 @@ if(isset($_POST['edit_penjualan'])) {
                                 <p class="text-[10px] font-bold <?= $status_color ?>"><?= $r['status'] ?></p>
                             </div>
                         </div>
-                        <!-- Tombol Aksi -->
-                        <div class="flex gap-2 mt-3 pt-3 border-t border-slate-100">
-                            <button type="button" onclick='openEditPenjualan(<?= json_encode($r) ?>)' class="flex-1 py-2 bg-blue-50 text-blue-600 rounded-xl text-xs font-bold hover:bg-blue-100 active:scale-95 transition-all flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-pen text-[10px]"></i> Edit
-                            </button>
-                            <form method="POST" action="" onsubmit="return confirm('Yakin hapus? Saldo akan dihitung ulang.');" class="flex-1">
-                                <input type="hidden" name="id_transaksi" value="<?= $r['id'] ?>">
-                                <button type="submit" name="hapus_penjualan" class="w-full py-2 bg-red-50 text-red-600 rounded-xl text-xs font-bold hover:bg-red-100 active:scale-95 transition-all flex items-center justify-center gap-1">
-                                    <i class="fa-solid fa-trash text-[10px]"></i> Hapus
-                                </button>
-                            </form>
-                        </div>
+
                     </div>
                     <?php endwhile; endif; ?>
                 </div>
@@ -152,74 +71,7 @@ if(isset($_POST['edit_penjualan'])) {
         <?php include 'footer.php'; ?>
     </div>
 
-    <!-- MODAL EDIT PENJUALAN (Mobile) -->
-    <div id="modalEditPenjualan" class="hidden fixed inset-0 z-[100] flex items-end justify-center sm:items-center">
-        <div class="modal-overlay fixed inset-0" onclick="closeModal()"></div>
-        <div class="bg-white w-full md:w-[400px] rounded-t-[2rem] md:rounded-[2rem] p-6 relative z-10 shadow-2xl pb-safe">
-            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-4"></div>
-            <h3 class="text-lg font-extrabold text-slate-800 text-center mb-4"><i class="fa-solid fa-pen-to-square text-blue-500 mr-1"></i> Edit Penjualan</h3>
-            <form method="POST" action="" class="flex flex-col gap-3">
-                <input type="hidden" name="id_transaksi" id="ep_id">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Produk</label>
-                    <input type="text" name="edit_produk" id="ep_produk" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">No Tujuan</label>
-                    <input type="text" name="edit_no_tujuan" id="ep_no_tujuan" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Modal (Rp)</label>
-                        <input type="hidden" name="edit_harga_modal" id="ep_modal_hidden">
-                        <input type="text" inputmode="numeric" id="ep_modal" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" oninput="formatRp(this, 'ep_modal_hidden')">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Jual (Rp)</label>
-                        <input type="hidden" name="edit_harga_jual" id="ep_jual_hidden">
-                        <input type="text" inputmode="numeric" id="ep_jual" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" oninput="formatRp(this, 'ep_jual_hidden')">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Keterangan</label>
-                    <input type="text" name="edit_keterangan" id="ep_keterangan" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                </div>
-                <div class="grid grid-cols-2 gap-3 mt-2">
-                    <button type="button" onclick="closeModal()" class="py-3 bg-slate-100 text-slate-500 font-extrabold rounded-xl text-sm">Batal</button>
-                    <button type="submit" name="edit_penjualan" class="py-3 bg-primary text-white font-extrabold rounded-xl text-sm shadow-lg shadow-primary/30"><i class="fa-solid fa-check mr-1"></i> Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <script>
-        function formatRp(el, hiddenId) {
-            let raw = el.value.replace(/\D/g, '');
-            document.getElementById(hiddenId).value = raw;
-            el.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        }
-
-        function openEditPenjualan(data) {
-            document.getElementById('ep_id').value = data.id;
-            document.getElementById('ep_produk').value = data.produk;
-            document.getElementById('ep_no_tujuan').value = data.no_tujuan;
-            
-            document.getElementById('ep_modal_hidden').value = Math.round(data.harga_modal);
-            document.getElementById('ep_modal').value = Math.round(data.harga_modal).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-            
-            document.getElementById('ep_jual_hidden').value = Math.round(data.harga_jual);
-            document.getElementById('ep_jual').value = Math.round(data.harga_jual).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-            
-            document.getElementById('ep_keterangan').value = data.keterangan || '';
-            document.getElementById('modalEditPenjualan').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('modalEditPenjualan').classList.add('hidden');
-        }
-
-        document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
-    </script>
 
 </body>
 </html>
