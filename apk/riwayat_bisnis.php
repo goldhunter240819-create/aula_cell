@@ -79,15 +79,15 @@ require '../koneksi.php';
                             </div>
                             
                             <div class="flex flex-col items-end gap-0.5 text-right">
-                                <div class="text-[10px] flex justify-between w-32">
-                                    <span class="text-slate-500">Modal</span>
-                                    <span class="font-semibold text-slate-600">Rp <?= number_format($r['harga_modal'] ?? 0,0,',','.') ?></span>
+                                <div class="text-[10px] flex justify-between w-40">
+                                    <span class="text-slate-500 text-left truncate mr-2">Modal <span class="text-[8px] text-slate-400">(<?= $r['dompet_modal'] ?>)</span></span>
+                                    <span class="font-semibold text-slate-600 shrink-0">Rp <?= number_format($r['harga_modal'] ?? 0,0,',','.') ?></span>
                                 </div>
-                                <div class="text-[10px] flex justify-between w-32">
-                                    <span class="text-slate-500">Jual</span>
-                                    <span class="font-semibold text-slate-600">Rp <?= number_format($r['harga_jual'] ?? 0,0,',','.') ?></span>
+                                <div class="text-[10px] flex justify-between w-40">
+                                    <span class="text-slate-500 text-left truncate mr-2">Jual <span class="text-[8px] text-slate-400">(<?= $r['dompet_pemasukan'] ?>)</span></span>
+                                    <span class="font-semibold text-slate-600 shrink-0">Rp <?= number_format($r['harga_jual'] ?? 0,0,',','.') ?></span>
                                 </div>
-                                <div class="text-[11px] font-bold flex justify-between w-32 mt-0.5 pt-0.5 border-t border-slate-100">
+                                <div class="text-[11px] font-bold flex justify-between w-40 mt-0.5 pt-0.5 border-t border-slate-100">
                                     <span class="text-slate-600">Laba</span>
                                     <span class="text-emerald-600">+Rp <?= number_format(($r['harga_jual'] ?? 0) - ($r['harga_modal'] ?? 0),0,',','.') ?></span>
                                 </div>
