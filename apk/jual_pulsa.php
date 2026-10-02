@@ -165,8 +165,9 @@ if(isset($_POST['submit'])) {
                 <?php
                 $q_dompet = mysqli_query($conn, "SELECT * FROM dompet WHERE tipe='Bisnis'");
                 while($d = mysqli_fetch_assoc($q_dompet)):
+                    $selected = (stripos($d['nama_dompet'], 'DANA') !== false) ? 'selected' : '';
                 ?>
-                <option value="<?= $d['id'] ?>"><?= $d['nama_dompet'] ?> (Rp <?= number_format($d['saldo'],0,',','.') ?>)</option>
+                <option value="<?= $d['id'] ?>" <?= $selected ?>><?= $d['nama_dompet'] ?> (Rp <?= number_format($d['saldo'],0,',','.') ?>)</option>
                 <?php endwhile; ?>
             </select>
         </div>
