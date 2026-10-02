@@ -95,7 +95,7 @@ $foto_url = empty($foto) ? "../aulalogo.png" : "../uploads/" . $foto;
                             <span>Aula Cell</span>
                         </div>
                         <p class="text-sm text-blue-100 font-semibold">Selamat Datang,</p>
-                        <h1 class="text-2xl font-extrabold tracking-tight">Bos <?= explode(' ', trim($_SESSION['nama_lengkap']))[0] ?></h1>
+                        <h1 class="text-2xl font-extrabold tracking-tight">Owner <?= explode(' ', trim($_SESSION['nama_lengkap']))[0] ?></h1>
                     </div>
                     
                     <a href="pengaturan.php" class="w-12 h-12 rounded-full border-2 border-white/40 overflow-hidden bg-white/20 flex items-center justify-center shadow-inner">
